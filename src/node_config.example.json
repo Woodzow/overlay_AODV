@@ -1,0 +1,33 @@
+{
+  "node_id": "n1",
+  "bind_ip": "0.0.0.0",
+  "node_ip": "192.168.1.10",
+  "overlay_port": 5005,
+  "control_bind_ip": "0.0.0.0",
+  "control_port": 5101,
+  "hello_interval_sec": 10,
+  "hello_timeout_sec": 30,
+  "route_lifetime_sec": 300,
+  "path_discovery_timeout_sec": 30,
+  "rreq_ttl": 16,
+  "rreq_ttl_start": 2,
+  "rreq_ttl_increment": 2,
+  "rreq_ttl_threshold": 7,
+  "rreq_retry_wait_sec": 2,
+  "rreq_retries": 3,
+  "local_repair_enabled": true,
+  "local_repair_wait_sec": 5,
+  "rrep_ack_enabled": true,
+  "rrep_ack_timeout_sec": 2,
+  "rerr_rate_limit_sec": 1,
+  "rerr_max_dest_per_msg": 16,
+  "tx_jitter_max_ms": 30,
+  "pending_queue_limit_per_dest": 32,
+  "pending_total_limit": 256,
+  "neighbors": [
+    {
+      "node_id": "n2",
+      "ip": "192.168.1.11"
+    }
+  ]
+}
