@@ -28,8 +28,8 @@ def run():
     for h in net.hosts:
         h.cmd("sysctl -w net.ipv4.ip_forward=1 >/dev/null")
 
-    project_path = "/home/admin/overlay_AODV"
-    entry = "src/main.py"
+    project_path = "/home/admin/overlay_AODV/src"
+    entry = "main.py"
 
     info("*** Starting AODV node process on all hosts...\n")
     for h in net.hosts:
