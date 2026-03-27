@@ -12,17 +12,19 @@ if TYPE_CHECKING:
 
 
 def _show_route_table(protocol: "AodvProtocol") -> str:
-    """格式化输出当前路由表。"""
+    """Format route table in compact style: Destination | Next Hop | Distance."""
     lines = [
-        "Destination  NextHop  NextHopIP       HopCount  DestSeq  State      Valid",
-        "--------------------------------------------------------------------------",
+        "Destination     | Next Hop        | Distance",
+        "=============================================",
     ]
     with protocol._lock:
-        for route in protocol.routing_table.values():
-            lines.append(
-                f"{route.dest_addr:<12} {route.next_hop:<8} {route.next_hop_ip:<14} "
-                f"{route.hop_count:<9} {route.dest_seq_num:<7} {route.route_state:<10} {str(route.valid):<5}"
-            )
+        routes = sorted(protocol.routing_table.values(), key=lambda item: item.dest_addr)
+        for route in routes:
+            if not route.valid:
+                continue
+            lines.append(f"{route.dest_addr:<15} | {route.next_hop_ip:<15} | {float(route.hop_count):.1f}")
+    if len(lines) == 2:
+        lines.append("(empty)")
     return "\n".join(lines)
 
 

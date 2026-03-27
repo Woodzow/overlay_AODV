@@ -7,6 +7,7 @@
 """
 
 import argparse
+import socket
 import time
 
 from aodv_config import NodeConfig
@@ -14,9 +15,38 @@ from aodv_protocol import AodvProtocol
 from listener import Listener
 
 
-def run_node(config_path: str, no_cli: bool) -> None:
+def _default_node_id_from_ip(ip: str) -> str:
+    """Use last IPv4 octet as a stable default node id."""
+    last_octet = ip.strip().split(".")[-1]
+    return f"n{last_octet}"
+
+
+def build_node_config(args: argparse.Namespace) -> NodeConfig:
+    """Build NodeConfig from either JSON file or minimal CLI args."""
+    if args.config:
+        return NodeConfig.from_file(args.config)
+
+    if not args.ip:
+        raise ValueError("node 模式必须提供 --config 或 --ip")
+
+    try:
+        socket.inet_aton(args.ip)
+    except OSError as exc:
+        raise ValueError(f"非法 IPv4 地址: {args.ip}") from exc
+
+    return NodeConfig(
+        node_id=(args.node_id or _default_node_id_from_ip(args.ip)),
+        bind_ip=args.bind_ip,
+        node_ip=args.ip,
+        overlay_port=int(args.overlay_port),
+        control_bind_ip=args.control_bind_ip,
+        control_port=int(args.control_port),
+        neighbors=[],
+    )
+
+
+def run_node(config: NodeConfig, no_cli: bool) -> None:
     """启动节点并维持主循环，直到收到退出信号。"""
-    config = NodeConfig.from_file(config_path)
     protocol = AodvProtocol(config)
     protocol.start()
 
@@ -38,14 +68,21 @@ def run_node(config_path: str, no_cli: bool) -> None:
         protocol.join(timeout=3)
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """解析节点启动参数。"""
     parser = argparse.ArgumentParser(description="AODV 应用层覆盖网络节点")
-    parser.add_argument("--config", required=True, help="节点配置文件路径")
+    parser.add_argument("--config", help="节点配置文件路径")
+    parser.add_argument("--ip", help="节点 IPv4 地址（无配置文件模式）")
+    parser.add_argument("--node-id", help="节点标识（默认按 IP 末段生成，如 n1）")
+    parser.add_argument("--bind-ip", default="0.0.0.0", help="overlay 监听地址（默认 0.0.0.0）")
+    parser.add_argument("--overlay-port", type=int, default=5005, help="overlay UDP 端口（默认 5005）")
+    parser.add_argument("--control-bind-ip", default="0.0.0.0", help="控制面监听地址（默认 0.0.0.0）")
+    parser.add_argument("--control-port", type=int, default=5100, help="控制面 UDP 端口（默认 5100）")
     parser.add_argument("--no-cli", action="store_true", help="不启动本地交互命令行")
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    run_node(config_path=args.config, no_cli=args.no_cli)
+    node_config = build_node_config(args)
+    run_node(config=node_config, no_cli=args.no_cli)

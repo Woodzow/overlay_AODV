@@ -19,6 +19,12 @@ def parse_args() -> argparse.Namespace:
         help="运行模式：node 为节点进程，tester 为脚本测试器",
     )
     parser.add_argument("--config", help="node 模式下使用的节点配置文件")
+    parser.add_argument("--ip", help="node 模式下节点 IPv4 地址（无配置文件模式）")
+    parser.add_argument("--node-id", help="node 模式下节点标识（可选）")
+    parser.add_argument("--bind-ip", help="node 模式下 overlay 监听地址")
+    parser.add_argument("--overlay-port", type=int, help="node 模式下 overlay UDP 端口")
+    parser.add_argument("--control-bind-ip", help="node 模式下控制面监听地址")
+    parser.add_argument("--control-port", type=int, help="node 模式下控制面 UDP 端口")
     parser.add_argument("--cluster", help="tester 模式下使用的集群配置文件")
     parser.add_argument("--script", help="tester 模式下使用的脚本文件")
     parser.add_argument("--no-cli", action="store_true", help="node 模式不启动本地 CLI")
@@ -30,10 +36,24 @@ def main() -> int:
     args = parse_args()
 
     if args.mode == "node":
-        if not args.config:
-            print("node 模式必须提供 --config")
+        if (not args.config) and (not args.ip):
+            print("node 模式必须提供 --config 或 --ip")
             return 1
-        cmd = [sys.executable, "node.py", "--config", args.config]
+        cmd = [sys.executable, "node.py"]
+        if args.config:
+            cmd.extend(["--config", args.config])
+        if args.ip:
+            cmd.extend(["--ip", args.ip])
+        if args.node_id:
+            cmd.extend(["--node-id", args.node_id])
+        if args.bind_ip:
+            cmd.extend(["--bind-ip", args.bind_ip])
+        if args.overlay_port is not None:
+            cmd.extend(["--overlay-port", str(args.overlay_port)])
+        if args.control_bind_ip:
+            cmd.extend(["--control-bind-ip", args.control_bind_ip])
+        if args.control_port is not None:
+            cmd.extend(["--control-port", str(args.control_port)])
         if args.no_cli:
             cmd.append("--no-cli")
         return subprocess.call(cmd)
