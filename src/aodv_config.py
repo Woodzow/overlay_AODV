@@ -44,6 +44,8 @@ class NodeConfig:
     control_port: int = 5100
     hello_interval_sec: int = 10
     hello_timeout_sec: int = 30
+    auto_neighbor_discovery: bool = True
+    discovery_broadcast_ip: str = "255.255.255.255"
     route_lifetime_sec: int = 300
     path_discovery_timeout_sec: int = 30
     rreq_ttl: int = 16
@@ -80,6 +82,8 @@ class NodeConfig:
             control_port=int(data.get("control_port", 5100)),
             hello_interval_sec=int(data.get("hello_interval_sec", 10)),
             hello_timeout_sec=int(data.get("hello_timeout_sec", 30)),
+            auto_neighbor_discovery=bool(data.get("auto_neighbor_discovery", True)),
+            discovery_broadcast_ip=str(data.get("discovery_broadcast_ip", "255.255.255.255")),
             route_lifetime_sec=int(data.get("route_lifetime_sec", 300)),
             path_discovery_timeout_sec=int(data.get("path_discovery_timeout_sec", 30)),
             rreq_ttl=int(data.get("rreq_ttl", 16)),

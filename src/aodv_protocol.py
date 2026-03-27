@@ -169,6 +169,12 @@ class AodvProtocol(threading.Thread):
             "lifetime": max(1, self.config.hello_timeout_sec),
         }
         self._broadcast_to_neighbors(packet)
+        if self.config.auto_neighbor_discovery:
+            with self._lock:
+                has_neighbors = bool(self.neighbor_table)
+            if not has_neighbors:
+                # No static/dynamic neighbors yet: send HELLO to broadcast to discover peers.
+                self._send_packet_to_ip(self.config.discovery_broadcast_ip, packet)
         self.last_hello_ts = time.time()
         self._log_event("send_hello", ttl=1)
 
@@ -350,6 +356,8 @@ class AodvProtocol(threading.Thread):
         return f"消息已发送，下一跳={route.next_hop_ip}"
 
     def _touch_neighbor(self, neighbor_addr: str, neighbor_ip: str) -> None:
+        if neighbor_addr == self.node_addr or neighbor_ip == self.node_addr:
+            return
         now = time.time()
         self.neighbor_manager.touch(neighbor_addr, neighbor_ip, now)
         self.route_manager.upsert_connected(neighbor_addr, neighbor_ip, now, self.config.route_lifetime_sec)
@@ -647,6 +655,7 @@ class AodvProtocol(threading.Thread):
         self.overlay_sock.bind((self.config.bind_ip, self.config.overlay_port))
         self.overlay_sock.setblocking(False)
         self.overlay_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.overlay_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
         self.control_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.control_sock.bind((self.config.control_bind_ip, self.config.control_port))

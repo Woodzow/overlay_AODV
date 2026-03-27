@@ -7,6 +7,8 @@
   "control_port": 5101,
   "hello_interval_sec": 10,
   "hello_timeout_sec": 30,
+  "auto_neighbor_discovery": true,
+  "discovery_broadcast_ip": "255.255.255.255",
   "route_lifetime_sec": 300,
   "path_discovery_timeout_sec": 30,
   "rreq_ttl": 16,
@@ -24,10 +26,5 @@
   "tx_jitter_max_ms": 30,
   "pending_queue_limit_per_dest": 32,
   "pending_total_limit": 256,
-  "neighbors": [
-    {
-      "node_id": "n2",
-      "ip": "192.168.1.11"
-    }
-  ]
+  "neighbors": []
 }

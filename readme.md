@@ -23,19 +23,19 @@
 
 ## 目录
 
-- `Src/aodv_protocol.py`：协议核心状态机
-- `Src/aodv_codec.py`：二进制编解码
-- `Src/aodv_route_manager.py`：路由表状态与更新策略
-- `Src/aodv_error_manager.py`：前驱、RERR 去重/限速
-- `Src/aodv_discovery_manager.py`：RREQ 发现重试
-- `Src/aodv_local_repair_manager.py`：本地修复状态
-- `Src/aodv_ack_manager.py`：RREP-ACK 等待状态
-- `Src/aodv_control.py`：控制命令
+- `src/aodv_protocol.py`：协议核心状态机
+- `src/aodv_codec.py`：二进制编解码
+- `src/aodv_route_manager.py`：路由表状态与更新策略
+- `src/aodv_error_manager.py`：前驱、RERR 去重/限速
+- `src/aodv_discovery_manager.py`：RREQ 发现重试
+- `src/aodv_local_repair_manager.py`：本地修复状态
+- `src/aodv_ack_manager.py`：RREP-ACK 等待状态
+- `src/aodv_control.py`：控制命令
 
 ## 启动
 
 ```bash
-cd Src
+cd src
 python main.py node --config node_config.json
 ```
 
@@ -48,7 +48,7 @@ python main.py node --config node_config.json --no-cli
 脚本测试：
 
 ```bash
-cd Src
+cd src
 python main.py tester --cluster cluster_config.json --script aodv_script
 ```
 
