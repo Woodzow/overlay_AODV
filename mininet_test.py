@@ -37,7 +37,7 @@ def run():
         cmd = (
             f"cd {project_path} && "
             f"python3 {entry} node --ip {host_ip} --no-cli "
-            f"> logs/{h.name}.log 2>&1 &"
+            f"> {project_path}/../logs/{h.name}.log 2>&1 &"
         )
         info(f"*** {h.name} executing: {cmd}\n")
         h.cmd(cmd)
