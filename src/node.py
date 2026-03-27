@@ -45,10 +45,16 @@ def build_node_config(args: argparse.Namespace) -> NodeConfig:
     )
 
 
-def run_node(config: NodeConfig, no_cli: bool) -> None:
+def run_node(config: NodeConfig, no_cli: bool, dest_ip: str | None = None) -> None:
     """启动节点并维持主循环，直到收到退出信号。"""
     protocol = AodvProtocol(config)
     protocol.start()
+    if dest_ip:
+        deadline = time.time() + 3.0
+        while protocol.overlay_sock is None and time.time() < deadline:
+            time.sleep(0.05)
+        protocol._start_route_discovery(dest_addr=dest_ip, dest_seq_num=0, force=True)
+        protocol._trace(f"入口参数触发路由发现: dest={dest_ip}")
 
     listener = None
     if not no_cli:
@@ -78,6 +84,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--overlay-port", type=int, default=5005, help="overlay UDP 端口（默认 5005）")
     parser.add_argument("--control-bind-ip", default="0.0.0.0", help="控制面监听地址（默认 0.0.0.0）")
     parser.add_argument("--control-port", type=int, default=5100, help="控制面 UDP 端口（默认 5100）")
+    parser.add_argument("--dest-ip", help="启动后立即发起路由发现的目的节点 IP")
     parser.add_argument("--no-cli", action="store_true", help="不启动本地交互命令行")
     return parser.parse_args(argv)
 
@@ -85,4 +92,4 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 if __name__ == "__main__":
     args = parse_args()
     node_config = build_node_config(args)
-    run_node(config=node_config, no_cli=args.no_cli)
+    run_node(config=node_config, no_cli=args.no_cli, dest_ip=args.dest_ip)

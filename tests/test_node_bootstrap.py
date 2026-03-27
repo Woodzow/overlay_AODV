@@ -37,6 +37,10 @@ class TestNodeBootstrap(unittest.TestCase):
         self.assertEqual(cfg.overlay_port, 6000)
         self.assertEqual(cfg.control_port, 6200)
 
+    def test_parse_dest_ip(self) -> None:
+        args = parse_args(["--ip", "10.0.0.9", "--dest-ip", "10.0.0.4"])
+        self.assertEqual(args.dest_ip, "10.0.0.4")
+
 
 if __name__ == "__main__":
     unittest.main()

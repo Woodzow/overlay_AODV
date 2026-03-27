@@ -6,6 +6,7 @@
 """
 
 import argparse
+from pathlib import Path
 import subprocess
 import sys
 
@@ -25,6 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--overlay-port", type=int, help="node 模式下 overlay UDP 端口")
     parser.add_argument("--control-bind-ip", help="node 模式下控制面监听地址")
     parser.add_argument("--control-port", type=int, help="node 模式下控制面 UDP 端口")
+    parser.add_argument("--dest-ip", help="node 模式下启动后立即发现的目的节点 IP")
     parser.add_argument("--cluster", help="tester 模式下使用的集群配置文件")
     parser.add_argument("--script", help="tester 模式下使用的脚本文件")
     parser.add_argument("--no-cli", action="store_true", help="node 模式不启动本地 CLI")
@@ -34,12 +36,13 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     """根据模式转发到对应子程序。"""
     args = parse_args()
+    base_dir = Path(__file__).resolve().parent
 
     if args.mode == "node":
         if (not args.config) and (not args.ip):
             print("node 模式必须提供 --config 或 --ip")
             return 1
-        cmd = [sys.executable, "node.py"]
+        cmd = [sys.executable, str(base_dir / "node.py")]
         if args.config:
             cmd.extend(["--config", args.config])
         if args.ip:
@@ -54,6 +57,8 @@ def main() -> int:
             cmd.extend(["--control-bind-ip", args.control_bind_ip])
         if args.control_port is not None:
             cmd.extend(["--control-port", str(args.control_port)])
+        if args.dest_ip:
+            cmd.extend(["--dest-ip", args.dest_ip])
         if args.no_cli:
             cmd.append("--no-cli")
         return subprocess.call(cmd)
@@ -64,7 +69,7 @@ def main() -> int:
 
     cmd = [
         sys.executable,
-        "tester.py",
+        str(base_dir / "tester.py"),
         "--cluster",
         args.cluster,
         "--script",

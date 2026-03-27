@@ -69,6 +69,15 @@ class AodvProtocol(threading.Thread):
         detail = " ".join(f"{k}={v}" for k, v in fields.items())
         self.logger.debug(f"event={event} {detail}".strip())
 
+    def _trace(self, message: str) -> None:
+        """Human-readable runtime trace for demos/debugging."""
+        text = f"[{self.node_id}@{self.node_addr}] {message}"
+        print(text, flush=True)
+        logger = getattr(self, "logger", None)
+        log_info = getattr(logger, "info", None)
+        if callable(log_info):
+            log_info(text)
+
     def stop(self) -> None:
         self._stop_event.set()
 
@@ -298,6 +307,9 @@ class AodvProtocol(threading.Thread):
         self._broadcast_to_neighbors(packet)
         self.discovery_manager.mark_sent(dest_addr, ttl, now, self.config.rreq_retry_wait_sec)
         self._log_event("send_rreq", dest=dest_addr, rreq_id=self.rreq_id, ttl=ttl)
+        self._trace(
+            f"发起RREQ: dest={dest_addr} rreq_id={self.rreq_id} ttl={ttl} flags=0x{flags:02x}"
+        )
 
     def _send_rrep(
         self,
@@ -349,6 +361,7 @@ class AodvProtocol(threading.Thread):
             seq_hint = known.dest_seq_num if known else 0
             self._queue_data_packet(dest_addr, packet)
             self._start_route_discovery(dest_addr, seq_hint)
+            self._trace(f"无可用路由，已缓存数据并触发发现: dest={dest_addr}")
             return f"无可用路由，已触发发现并缓存消息（目标={dest_addr}）"
 
         self._send_packet_to_ip(route.next_hop_ip, packet)
@@ -424,6 +437,10 @@ class AodvProtocol(threading.Thread):
         rreq_id = int(packet.get("rreq_id", 0))
         orig_seq_num = int(packet.get("orig_seq_num", 0))
         dest_seq_num = 0 if is_unknown_seq else int(packet.get("dest_seq_num", 0))
+        self._trace(
+            f"收到RREQ: from={sender_ip} orig={orig_addr} dest={dest_addr} "
+            f"rreq_id={rreq_id} hop={hop_count} ttl={ttl} flags=0x{flags:02x}"
+        )
 
         self._touch_neighbor(sender, sender_ip)
 
@@ -451,6 +468,7 @@ class AodvProtocol(threading.Thread):
             else:
                 self.seq_num = (max(self.seq_num, dest_seq_num) + 1) & 0xFFFFFFFF
             self._send_rrep(orig_addr, sender_ip, self.node_addr, self.seq_num, 0, ttl=self.config.rreq_ttl)
+            self._trace(f"命中目的地，回发RREP给 {sender_ip}，dest={self.node_addr}")
             return
 
         known = self.route_manager.get_valid(dest_addr, now)
@@ -468,6 +486,9 @@ class AodvProtocol(threading.Thread):
                 known.hop_count,
                 ttl=self.config.rreq_ttl,
             )
+            self._trace(
+                f"找到目的路由，作为中间节点回RREP: dest={dest_addr} next_hop={known.next_hop_ip} hop={known.hop_count}"
+            )
             if gratuitous:
                 route_to_origin = self.route_manager.get_valid(orig_addr, now)
                 if route_to_origin is not None:
@@ -479,6 +500,9 @@ class AodvProtocol(threading.Thread):
                         hop_count=route_to_origin.hop_count,
                         ttl=self.config.rreq_ttl,
                     )
+                    self._trace(
+                        f"发送gratuitous RREP给目的节点: dest={dest_addr} about_orig={orig_addr}"
+                    )
             return
 
         fwd = dict(packet)
@@ -486,6 +510,9 @@ class AodvProtocol(threading.Thread):
         fwd["hop_count"] = (hop_count + 1) & 0xFF
         fwd["ttl"] = (ttl - 1) & 0xFF
         self._broadcast_to_neighbors(fwd, exclude_node=sender_ip)
+        self._trace(
+            f"转发RREQ: orig={orig_addr} dest={dest_addr} new_hop={fwd['hop_count']} new_ttl={fwd['ttl']}"
+        )
 
     def _process_rrep(self, packet: dict, sender_ip: str) -> None:
         sender = packet.get("sender")
@@ -523,10 +550,14 @@ class AodvProtocol(threading.Thread):
         )
         self.route_manager.upsert_discovered(new_route)
         self.local_repair_manager.complete(dest_addr)
+        self._trace(
+            f"收到RREP并更新路由: dest={dest_addr} via={sender_ip} hop={new_route.hop_count} seq={dest_seq_num}"
+        )
 
         if orig_addr == self.node_addr:
             self.discovery_manager.clear(dest_addr)
             self._flush_pending_data(dest_addr)
+            self._trace(f"本节点路由发现成功: dest={dest_addr}")
             return
 
         reverse = self.route_manager.get_valid(orig_addr, now)

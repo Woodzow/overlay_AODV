@@ -1,3 +1,6 @@
 #macos的文件列表偏好文件
 .DS_store
+__pycache__
+.vscode
+
 
