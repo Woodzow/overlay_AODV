@@ -2,20 +2,20 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1] / "Src"))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
 
 from node import build_node_config, parse_args
 
 
 class TestNodeBootstrap(unittest.TestCase):
     def test_build_from_ip_defaults(self) -> None:
-        args = parse_args(["--ip", "10.0.0.7", "--no-cli"])
+        args = parse_args(["--ip", "10.0.0.7"])
         cfg = build_node_config(args)
         self.assertEqual(cfg.node_ip, "10.0.0.7")
         self.assertEqual(cfg.node_id, "n7")
         self.assertEqual(cfg.bind_ip, "0.0.0.0")
         self.assertEqual(cfg.overlay_port, 5005)
-        self.assertEqual(cfg.control_bind_ip, "0.0.0.0")
+        self.assertEqual(cfg.control_bind_ip, "127.0.0.1")
         self.assertEqual(cfg.control_port, 5100)
         self.assertEqual(cfg.neighbors, [])
 

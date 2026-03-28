@@ -39,23 +39,10 @@ cd src
 python main.py node --config node_config.json
 ```
 
-无交互模式：
-
-```bash
-python main.py node --config node_config.json --no-cli
-```
-
-脚本测试：
-
-```bash
-cd src
-python main.py tester --cluster cluster_config.json --script aodv_script
-```
-
 ## 单元测试
 
 ```bash
-python -m unittest discover -s tests -p "test_*.py" -v
+python3 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 ## 控制命令
@@ -75,6 +62,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 
 - `hello_interval_sec`: 10
 - `hello_timeout_sec`: 30
+- `bootstrap_peers`: []（跨网段建议配置种子节点 IP）
 - `rreq_ttl_start`: 2
 - `rreq_ttl_increment`: 2
 - `rreq_ttl_threshold`: 7
@@ -89,5 +77,4 @@ python -m unittest discover -s tests -p "test_*.py" -v
 
 ## 示例配置
 
-- 节点配置：`Src/node_config.example.json`
-- 集群配置：`Src/cluster_config.example.json`
+- 节点配置：`src/node_config.example.json`

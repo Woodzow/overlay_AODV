@@ -23,14 +23,14 @@ class NodeConfig:
 
     包含两类参数：
     1) 数据面参数：overlay 端口、HELLO/路由超时等
-    2) 控制面参数：本地控制端口（CLI / tester 下发命令）
+    2) 控制面参数：控制端口（外部管理程序下发命令）
 
     JSON 配置示例：
     {
       "node_id": "n1",
       "bind_ip": "0.0.0.0",
       "overlay_port": 5005,
-      "control_bind_ip": "0.0.0.0",
+      "control_bind_ip": "127.0.0.1",
       "control_port": 5101,
       "neighbors": [{"node_id": "n2", "ip": "192.168.1.11"}]
     }
@@ -46,6 +46,7 @@ class NodeConfig:
     hello_timeout_sec: int = 30
     auto_neighbor_discovery: bool = True
     discovery_broadcast_ip: str = "255.255.255.255"
+    bootstrap_peers: list[str] = field(default_factory=list)
     route_lifetime_sec: int = 300
     path_discovery_timeout_sec: int = 30
     rreq_ttl: int = 16
@@ -84,6 +85,7 @@ class NodeConfig:
             hello_timeout_sec=int(data.get("hello_timeout_sec", 30)),
             auto_neighbor_discovery=bool(data.get("auto_neighbor_discovery", True)),
             discovery_broadcast_ip=str(data.get("discovery_broadcast_ip", "255.255.255.255")),
+            bootstrap_peers=[str(item) for item in data.get("bootstrap_peers", [])],
             route_lifetime_sec=int(data.get("route_lifetime_sec", 300)),
             path_discovery_timeout_sec=int(data.get("path_discovery_timeout_sec", 30)),
             rreq_ttl=int(data.get("rreq_ttl", 16)),

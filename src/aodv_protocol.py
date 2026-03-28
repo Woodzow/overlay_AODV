@@ -51,8 +51,8 @@ class AodvProtocol(threading.Thread):
         self.control_sock: socket.socket | None = None
         self._lock = threading.RLock()
         self._stop_event = threading.Event()
-        self.log_file = os.path.join("Logs", f"aodv_log_{self.node_id}")
-        os.makedirs("Logs", exist_ok=True)
+        self.log_file = os.path.join("logs", f"aodv_log_{self.node_id}")
+        os.makedirs("logs", exist_ok=True)
         self.addr_alias: dict[str, str] = {
             self.node_id: self.node_addr,
             self.node_addr: self.node_addr,
@@ -178,14 +178,23 @@ class AodvProtocol(threading.Thread):
             "lifetime": max(1, self.config.hello_timeout_sec),
         }
         self._broadcast_to_neighbors(packet)
-        if self.config.auto_neighbor_discovery:
-            with self._lock:
-                has_neighbors = bool(self.neighbor_table)
-            if not has_neighbors:
-                # No static/dynamic neighbors yet: send HELLO to broadcast to discover peers.
-                self._send_packet_to_ip(self.config.discovery_broadcast_ip, packet)
+        for target_ip in self._cold_start_probe_targets():
+            self._send_packet_to_ip(target_ip, packet)
         self.last_hello_ts = time.time()
         self._log_event("send_hello", ttl=1)
+
+    def _cold_start_probe_targets(self) -> list[str]:
+        if not self.config.auto_neighbor_discovery:
+            return []
+        with self._lock:
+            if self.neighbor_table:
+                return []
+        targets: list[str] = [self.config.discovery_broadcast_ip]
+        for peer_ip in getattr(self.config, "bootstrap_peers", []):
+            if not peer_ip or peer_ip == self.node_addr:
+                continue
+            targets.append(peer_ip)
+        return list(dict.fromkeys(targets))
 
     def _queue_data_packet(self, dest_addr: str, packet: dict) -> None:
         self.pending_data_packets.setdefault(dest_addr, []).append(dict(packet))
@@ -305,6 +314,8 @@ class AodvProtocol(threading.Thread):
             "orig_seq_num": self.seq_num,
         }
         self._broadcast_to_neighbors(packet)
+        for target_ip in self._cold_start_probe_targets():
+            self._send_packet_to_ip(target_ip, packet)
         self.discovery_manager.mark_sent(dest_addr, ttl, now, self.config.rreq_retry_wait_sec)
         self._log_event("send_rreq", dest=dest_addr, rreq_id=self.rreq_id, ttl=ttl)
         self._trace(
@@ -683,15 +694,15 @@ class AodvProtocol(threading.Thread):
         self._bootstrap_neighbors()
 
         self.overlay_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.overlay_sock.bind((self.config.bind_ip, self.config.overlay_port))
-        self.overlay_sock.setblocking(False)
         self.overlay_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.overlay_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.overlay_sock.bind((self.config.bind_ip, self.config.overlay_port))
+        self.overlay_sock.setblocking(False)
 
         self.control_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.control_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.control_sock.bind((self.config.control_bind_ip, self.config.control_port))
         self.control_sock.setblocking(False)
-        self.control_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         sockets = [self.overlay_sock, self.control_sock]
 

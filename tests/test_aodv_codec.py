@@ -2,7 +2,7 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1] / "Src"))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
 
 from aodv_codec import PROTOCOL_VERSION, RREQ_SUPPORTED_FLAG_MASK, decode_packet, encode_packet
 

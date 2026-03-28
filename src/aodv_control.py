@@ -159,7 +159,7 @@ def process_control_command(protocol: "AodvProtocol", command_text: str) -> str:
         neighbor_ip = parts[2].strip()
         protocol.addr_alias[neighbor_id] = neighbor_ip
         protocol.addr_alias[neighbor_ip] = neighbor_ip
-        protocol._touch_neighbor(neighbor_ip, neighbor_ip)
+        protocol._touch_neighbor(neighbor_id, neighbor_ip)
         return f"邻居已添加：{neighbor_id} -> {neighbor_ip}"
 
     if op == "DELETE_NEIGHBOR" and len(parts) >= 2:

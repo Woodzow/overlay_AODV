@@ -3,7 +3,6 @@
 负责：
 - 读取节点配置
 - 启动 AODV 协议线程
-- 可选启动本地 CLI 线程
 """
 
 import argparse
@@ -12,7 +11,6 @@ import time
 
 from aodv_config import NodeConfig
 from aodv_protocol import AodvProtocol
-from listener import Listener
 
 
 def _default_node_id_from_ip(ip: str) -> str:
@@ -45,7 +43,7 @@ def build_node_config(args: argparse.Namespace) -> NodeConfig:
     )
 
 
-def run_node(config: NodeConfig, no_cli: bool, dest_ip: str | None = None) -> None:
+def run_node(config: NodeConfig, dest_ip: str | None = None) -> None:
     """启动节点并维持主循环，直到收到退出信号。"""
     protocol = AodvProtocol(config)
     protocol.start()
@@ -56,17 +54,10 @@ def run_node(config: NodeConfig, no_cli: bool, dest_ip: str | None = None) -> No
         protocol._start_route_discovery(dest_addr=dest_ip, dest_seq_num=0, force=True)
         protocol._trace(f"入口参数触发路由发现: dest={dest_ip}")
 
-    listener = None
-    if not no_cli:
-        listener = Listener(config.control_bind_ip, config.control_port)
-        listener.start()
-
     try:
         while True:
             # 主线程仅做保活与线程状态检查，核心逻辑在子线程执行。
             time.sleep(1)
-            if listener and (not listener.is_alive()):
-                break
     except KeyboardInterrupt:
         pass
     finally:
@@ -82,14 +73,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--node-id", help="节点标识（默认按 IP 末段生成，如 n1）")
     parser.add_argument("--bind-ip", default="0.0.0.0", help="overlay 监听地址（默认 0.0.0.0）")
     parser.add_argument("--overlay-port", type=int, default=5005, help="overlay UDP 端口（默认 5005）")
-    parser.add_argument("--control-bind-ip", default="0.0.0.0", help="控制面监听地址（默认 0.0.0.0）")
+    parser.add_argument("--control-bind-ip", default="127.0.0.1", help="控制面监听地址（默认 127.0.0.1）")
     parser.add_argument("--control-port", type=int, default=5100, help="控制面 UDP 端口（默认 5100）")
     parser.add_argument("--dest-ip", help="启动后立即发起路由发现的目的节点 IP")
-    parser.add_argument("--no-cli", action="store_true", help="不启动本地交互命令行")
     return parser.parse_args(argv)
 
 
 if __name__ == "__main__":
     args = parse_args()
     node_config = build_node_config(args)
-    run_node(config=node_config, no_cli=args.no_cli, dest_ip=args.dest_ip)
+    run_node(config=node_config, dest_ip=args.dest_ip)
