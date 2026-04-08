@@ -11,6 +11,7 @@ import socket
 import threading
 import time
 import uuid
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,23 @@ from typing import Any
 APP_NAME = 'video_forwarder'
 APP_VERSION = 1
 DEFAULT_DATA_PORT = 6200
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_OUTPUT_DIR = REPO_ROOT / 'logs' / 'received_videos'
+
+
+class Tee:
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, data: str) -> int:
+        for stream in self.streams:
+            stream.write(data)
+            stream.flush()
+        return len(data)
+
+    def flush(self) -> None:
+        for stream in self.streams:
+            stream.flush()
 
 
 class ControlClient:
@@ -442,7 +460,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--data-port', type=int, default=DEFAULT_DATA_PORT, help='UDP port used by the file forwarder.')
     parser.add_argument('--control-ip', default='127.0.0.1', help='Local AODV control endpoint IP.')
     parser.add_argument('--control-port', type=int, default=5100, help='Local AODV control endpoint port.')
-    parser.add_argument('--output-dir', default='received_videos', help='Directory used to store received files.')
+    parser.add_argument('--output-dir', default=str(DEFAULT_OUTPUT_DIR), help='Directory used to store received files.')
+    parser.add_argument('--log-file', help='Optional file path used to store forwarder stdout/stderr logs.')
     parser.add_argument('--route-timeout-sec', type=float, default=12.0, help='Max time to wait for a route lookup.')
     parser.add_argument('--route-poll-interval-sec', type=float, default=0.5, help='Polling interval while waiting for routes.')
     parser.add_argument('--send-file', help='Optional local file path to send after the forwarder starts.')
@@ -454,12 +473,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def configure_log_file(log_file: str | None) -> None:
+    if not log_file:
+        return
+    log_path = Path(log_file).expanduser().resolve()
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    handle = log_path.open('a', encoding='utf-8', buffering=1)
+    sys.stdout = Tee(sys.stdout, handle)
+    sys.stderr = Tee(sys.stderr, handle)
+
 def main() -> int:
     args = parse_args()
     if args.send_file and not args.dest_ip:
         raise ValueError('--dest-ip is required with --send-file')
     if args.chunk_size <= 0:
         raise ValueError('--chunk-size must be positive')
+
+    configure_log_file(args.log_file)
 
     control_client = ControlClient(control_ip=args.control_ip, control_port=args.control_port)
     forwarder = VideoForwarder(
@@ -513,3 +543,4 @@ def main() -> int:
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

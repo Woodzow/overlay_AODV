@@ -19,31 +19,51 @@ except ImportError:
     from mn_wifi.cli import CLI_wifi as CLI
 
 
+VIDEO_DEST_IP = '10.0.0.4'
+VIDEO_DATA_PORT = 6200
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run a 4-station linear Mininet-WiFi topology for the AODV overlay project."
+        description='Run a 4-station linear Mininet-WiFi topology and one-click AODV file transfer test.'
     )
     parser.add_argument(
-        "--cli",
-        action="store_true",
-        help="Drop into the Mininet-WiFi CLI after the automated test.",
+        '--cli',
+        action='store_true',
+        help='Drop into the Mininet-WiFi CLI after the automated test.',
     )
     parser.add_argument(
-        "--neighbor-wait-sec",
+        '--neighbor-wait-sec',
         type=float,
         default=4.0,
-        help="Time to wait before querying neighbor and route state.",
+        help='Time to wait before querying neighbor and route state.',
     )
     parser.add_argument(
-        "--delivery-wait-sec",
-        type=float,
-        default=8.0,
-        help="Time to wait for route discovery and end-to-end data delivery.",
+        '--video-file',
+        default='data.mp4',
+        help='Video file path relative to repo root, or absolute path if needed.',
     )
     parser.add_argument(
-        "--payload",
-        default="hello from sta1 to sta4",
-        help="Payload injected from sta1 to sta4.",
+        '--video-dest-ip',
+        default=VIDEO_DEST_IP,
+        help='Destination node IP for the automated file transfer.',
+    )
+    parser.add_argument(
+        '--video-data-port',
+        type=int,
+        default=VIDEO_DATA_PORT,
+        help='UDP data port used by video_forwarder.py.',
+    )
+    parser.add_argument(
+        '--video-chunk-size',
+        type=int,
+        default=900,
+        help='Raw bytes per file chunk before base64 in video_forwarder.py.',
+    )
+    parser.add_argument(
+        '--skip-file-transfer',
+        action='store_true',
+        help='Only build topology and AODV processes, do not run the file transfer demo.',
     )
     return parser.parse_args()
 
@@ -54,9 +74,9 @@ def run_cmd(node, command: str) -> str:
 
 def send_control(node, command: str, timeout_sec: float = 3.0, port: int = 5100) -> str:
     script = (
-        "import socket; "
-        "sock=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); "
-        f"sock.settimeout({timeout_sec}); "
+        'import socket; '
+        'sock=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); '
+        f'sock.settimeout({timeout_sec}); '
         f"sock.sendto({command!r}.encode('utf-8'), ('127.0.0.1', {port})); "
         "data,_=sock.recvfrom(8192); "
         "print(data.decode('utf-8', 'ignore'))"
@@ -68,7 +88,9 @@ def start_aodv(node, config_path: Path, repo_root: Path) -> None:
     repo_text = shlex.quote(str(repo_root))
     src_text = shlex.quote(str(repo_root / 'src'))
     cfg_text = shlex.quote(str(config_path))
-    log_text = shlex.quote(f"/tmp/{node.name}-aodv.out")
+    log_dir = repo_root / 'logs' / 'mininet_wifi'
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_text = shlex.quote(str(log_dir / f'{node.name}-aodv.out'))
     cmd = (
         f"cd {repo_text} && "
         f"PYTHONPATH={src_text} "
@@ -81,6 +103,27 @@ def stop_aodv(node) -> None:
     node.cmd("pkill -f 'src/main.py node --config' >/dev/null 2>&1 || true")
 
 
+def start_video_forwarder(node, node_ip: str, repo_root: Path, output_dir: Path | None = None, data_port: int = VIDEO_DATA_PORT) -> None:
+    repo_text = shlex.quote(str(repo_root))
+    src_text = shlex.quote(str(repo_root / 'src'))
+    log_dir = repo_root / 'logs' / 'mininet_wifi'
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_text = shlex.quote(str(log_dir / f'{node.name}-video_forwarder.log'))
+    cmd_parts = [
+        f"cd {repo_text}",
+        f"PYTHONPATH={src_text} nohup python3 src/video_forwarder.py --node-ip {node_ip} --data-port {int(data_port)}",
+    ]
+    if output_dir is not None:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        cmd_parts[-1] += f" --output-dir {shlex.quote(str(output_dir))}"
+    cmd_parts[-1] += f" --log-file {log_text} > /dev/null 2>&1 &"
+    node.cmd(' && '.join(cmd_parts))
+
+
+def stop_video_forwarder(node) -> None:
+    node.cmd("pkill -f 'src/video_forwarder.py --node-ip' >/dev/null 2>&1 || true")
+
+
 def print_underlay_checks(stations) -> None:
     checks = [
         ('sta1', '10.0.0.2'),
@@ -90,15 +133,15 @@ def print_underlay_checks(stations) -> None:
     name_to_node = {node.name: node for node in stations}
     for source_name, target_ip in checks:
         node = name_to_node[source_name]
-        info(f"\n=== underlay check: {source_name} -> {target_ip} ===\n")
-        info(run_cmd(node, f"ping -c 1 -W 1 {target_ip}") + "\n")
+        info(f'\n=== underlay check: {source_name} -> {target_ip} ===\n')
+        info(run_cmd(node, f'ping -c 1 -W 1 {target_ip}') + '\n')
 
 
 def print_node_state(node) -> None:
-    info(f"\n=== {node.name} neighbors ===\n")
-    info(send_control(node, 'SHOW_NEIGHBORS') + "\n")
-    info(f"=== {node.name} routes ===\n")
-    info(send_control(node, 'SHOW_ROUTE') + "\n")
+    info(f'\n=== {node.name} neighbors ===\n')
+    info(send_control(node, 'SHOW_NEIGHBORS') + '\n')
+    info(f'=== {node.name} routes ===\n')
+    info(send_control(node, 'SHOW_ROUTE') + '\n')
 
 
 def build_topology():
@@ -125,6 +168,62 @@ def build_topology():
     return net, (sta1, sta2, sta3, sta4)
 
 
+def sha256sum(node, path: Path) -> str:
+    return run_cmd(node, f'sha256sum {shlex.quote(str(path))}').split()[0]
+
+
+def automated_file_transfer(
+    repo_root: Path,
+    stations,
+    video_file: Path,
+    dest_ip: str,
+    data_port: int,
+    chunk_size: int,
+) -> None:
+    sta1, sta2, sta3, sta4 = stations
+    received_dir = repo_root / 'logs' / 'received_videos'
+    received_dir.mkdir(parents=True, exist_ok=True)
+    expected_output = received_dir / video_file.name
+
+    for cleanup_path in (expected_output, expected_output.with_suffix(expected_output.suffix + '.part')):
+        if cleanup_path.exists():
+            cleanup_path.unlink()
+
+    info('*** Starting video_forwarder relay/receiver processes\n')
+    start_video_forwarder(sta2, '10.0.0.2', repo_root, data_port=data_port)
+    start_video_forwarder(sta3, '10.0.0.3', repo_root, data_port=data_port)
+    start_video_forwarder(sta4, '10.0.0.4', repo_root, output_dir=received_dir, data_port=data_port)
+    time.sleep(1.0)
+
+    info('*** Sending video file from sta1 to sta4\n')
+    send_cmd = (
+        f"cd {shlex.quote(str(repo_root))} && "
+        f"PYTHONPATH={shlex.quote(str(repo_root / 'src'))} "
+        f"python3 src/video_forwarder.py --node-ip 10.0.0.1 "
+        f"--data-port {int(data_port)} --send-file {shlex.quote(str(video_file))} "
+        f"--dest-ip {dest_ip} --chunk-size {int(chunk_size)} "
+        f"--log-file {shlex.quote(str(repo_root / 'logs' / 'mininet_wifi' / 'sta1-video_forwarder.log'))} "
+        '--exit-after-send'
+    )
+    sender_output = run_cmd(sta1, send_cmd)
+    info(sender_output + '\n')
+
+    for sta in stations:
+        info(f'\n=== {sta.name} routes after file transfer ===\n')
+        info(send_control(sta, 'SHOW_ROUTE') + '\n')
+
+    if not expected_output.exists():
+        raise RuntimeError(f'received file not found: {expected_output}')
+
+    src_hash = sha256sum(sta1, video_file)
+    dst_hash = sha256sum(sta4, expected_output)
+    info(f'\n=== file verification ===\nsource={video_file}\ndest={expected_output}\nsha256_src={src_hash}\nsha256_dst={dst_hash}\n')
+    if src_hash != dst_hash:
+        raise RuntimeError('sha256 mismatch after file transfer')
+
+    info('*** One-click file transfer succeeded\n')
+
+
 def main() -> int:
     args = parse_args()
 
@@ -133,6 +232,15 @@ def main() -> int:
         return 1
 
     repo_root = Path(__file__).resolve().parents[1]
+    video_file = Path(args.video_file)
+    if not video_file.is_absolute():
+        video_file = repo_root / video_file
+    video_file = video_file.resolve()
+
+    if (not args.skip_file_transfer) and (not video_file.is_file()):
+        print(f'Video file not found: {video_file}', file=sys.stderr)
+        return 1
+
     config_dir = repo_root / 'configs' / 'mininet_wifi'
     config_map = {
         'sta1': config_dir / 'sta1.json',
@@ -149,7 +257,6 @@ def main() -> int:
         return 1
 
     net, stations = build_topology()
-    sta1, sta2, sta3, sta4 = stations
 
     try:
         info('*** Building Mininet-WiFi network\n')
@@ -169,31 +276,26 @@ def main() -> int:
         for sta in stations:
             print_node_state(sta)
 
-        info('*** Sending application payload from sta1 to sta4\n')
-        response = send_control(sta1, f'SEND_MESSAGE:10.0.0.4:{args.payload}', timeout_sec=5.0)
-        info(response + '\n')
-
-        info(f'*** Waiting {args.delivery_wait_sec:.1f}s for route discovery and delivery\n')
-        time.sleep(args.delivery_wait_sec)
-
-        for sta in stations:
-            info(f"\n=== {sta.name} routes after send ===\n")
-            info(send_control(sta, 'SHOW_ROUTE') + '\n')
-
-        info('\n=== sta4 messages ===\n')
-        message_box = send_control(sta4, 'SHOW_MESSAGES')
-        info(message_box + '\n')
-
-        if args.payload in message_box:
-            info('*** End-to-end delivery succeeded\n')
+        if args.skip_file_transfer:
+            info('*** File transfer step skipped by --skip-file-transfer\n')
         else:
-            info('*** Payload not observed at sta4 yet; inspect /tmp/sta*-aodv.out and route tables\n')
+            automated_file_transfer(
+                repo_root=repo_root,
+                stations=stations,
+                video_file=video_file,
+                dest_ip=args.video_dest_ip,
+                data_port=args.video_data_port,
+                chunk_size=args.video_chunk_size,
+            )
 
         if args.cli:
             info('*** Starting Mininet-WiFi CLI\n')
             CLI(net)
         return 0
     finally:
+        info('*** Stopping video_forwarder processes\n')
+        for sta in stations:
+            stop_video_forwarder(sta)
         info('*** Stopping AODV node processes\n')
         for sta in stations:
             stop_aodv(sta)
