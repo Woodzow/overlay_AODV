@@ -1,7 +1,7 @@
 {
   "node_id": "n1",
   "bind_ip": "0.0.0.0",
-  "node_ip": "192.168.1.10",
+  "node_ip": "192.168.3.6",
   "overlay_port": 5005,
   "control_bind_ip": "127.0.0.1",
   "control_port": 5101,
