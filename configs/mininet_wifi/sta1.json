@@ -7,8 +7,8 @@
   "control_port": 5100,
   "hello_interval_sec": 2,
   "hello_timeout_sec": 6,
-  "auto_neighbor_discovery": true,
-  "discovery_broadcast_ip": "255.255.255.255",
+  "auto_neighbor_discovery": false,
+  "discovery_broadcast_ip": "10.0.0.255",
   "bootstrap_peers": [],
   "route_lifetime_sec": 30,
   "path_discovery_timeout_sec": 10,
@@ -27,5 +27,10 @@
   "tx_jitter_max_ms": 10,
   "pending_queue_limit_per_dest": 32,
   "pending_total_limit": 256,
-  "neighbors": []
+  "neighbors": [
+    {
+      "node_id": "sta2",
+      "ip": "10.0.0.2"
+    }
+  ]
 }
