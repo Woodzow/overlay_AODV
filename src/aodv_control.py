@@ -131,18 +131,7 @@ def _show_timer(protocol: "AodvProtocol") -> str:
 
 
 def process_control_command(protocol: "AodvProtocol", command_text: str) -> str:
-    """处理控制面命令并返回文本响应。
-
-    命令格式为 `OP[:arg1[:arg2]]`，例如：
-    - `ADD_NEIGHBOR:n2:192.168.1.11`
-    - `SEND_MESSAGE:n3:hello world`
-    - `SHOW_ROUTE`
-
-    给 Python 初学者的直观理解：
-    - 把 `command_text` 看成“冒号分隔的数组”
-      例如 `"ADD_NEIGHBOR:n2:192.168.1.11".split(":", 2)`
-      得到 `["ADD_NEIGHBOR", "n2", "192.168.1.11"]`
-    """
+    """处理控制面命令并返回文本响应。"""
     parts = command_text.strip().split(":", 2)
     op = parts[0].upper() if parts else ""
 
@@ -172,6 +161,18 @@ def process_control_command(protocol: "AodvProtocol", command_text: str) -> str:
             if neighbor_addr in protocol.routing_table:
                 protocol.routing_table[neighbor_addr].valid = False
         return f"邻居已删除：{neighbor_id}"
+
+    if op == "DISCOVER_ROUTE" and len(parts) >= 2:
+        target = parts[1].strip()
+        resolved = protocol.resolve_address(target)
+        if resolved is None:
+            return f"非法地址或未知别名：{target}"
+        with protocol._lock:
+            route = protocol.route_manager.get_valid(resolved, __import__('time').time())
+            if route is not None:
+                return f"已有有效路由：dest={resolved} next_hop={route.next_hop_ip} hop_count={route.hop_count}"
+        protocol._start_route_discovery(dest_addr=resolved, dest_seq_num=0, force=True)
+        return f"已触发路由发现：dest={resolved}"
 
     if op == "SEND_MESSAGE" and len(parts) >= 3:
         dest_addr = parts[1].strip()
@@ -222,9 +223,9 @@ def process_control_command(protocol: "AodvProtocol", command_text: str) -> str:
     if op == "HELP":
         return (
             "支持命令: NODE_ACTIVATE | NODE_DEACTIVATE | ADD_NEIGHBOR:<id>:<ip> | "
-            "DELETE_NEIGHBOR:<id> | SEND_MESSAGE:<dest>:<payload> | SHOW_ROUTE | SHOW_ROUTE_DETAIL:<dest> | "
-            "SHOW_NEIGHBORS | SHOW_MESSAGES | SHOW_DISCOVERY | SHOW_RREP_ACK | "
-            "SHOW_LOCAL_REPAIR | SHOW_PENDING_DATA | SHOW_PRECURSORS | SHOW_TIMER | CLEAR_MESSAGES"
+            "DELETE_NEIGHBOR:<id> | DISCOVER_ROUTE:<dest> | SEND_MESSAGE:<dest>:<payload> | "
+            "SHOW_ROUTE | SHOW_ROUTE_DETAIL:<dest> | SHOW_NEIGHBORS | SHOW_MESSAGES | SHOW_DISCOVERY | "
+            "SHOW_RREP_ACK | SHOW_LOCAL_REPAIR | SHOW_PENDING_DATA | SHOW_PRECURSORS | SHOW_TIMER | CLEAR_MESSAGES"
         )
 
     return "未知命令"
