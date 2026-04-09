@@ -18,6 +18,7 @@ APP_NAME = 'overlay_bench'
 APP_VERSION = 1
 DEFAULT_DATA_PORT = 6300
 REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SOCKET_BUFFER_BYTES = 1_048_576
 
 
 class Tee:
@@ -87,14 +88,24 @@ class OverlayBenchNode:
         control_client: ControlClient,
         route_timeout_sec: float,
         route_poll_interval_sec: float,
+        send_retries: int,
+        send_retry_sleep_ms: float,
+        socket_sndbuf_bytes: int,
+        socket_rcvbuf_bytes: int,
+        quiet: bool,
     ):
         self.node_ip = node_ip
         self.data_port = int(data_port)
         self.control_client = control_client
         self.route_timeout_sec = float(route_timeout_sec)
         self.route_poll_interval_sec = float(route_poll_interval_sec)
+        self.send_retries = int(send_retries)
+        self.send_retry_sleep_ms = float(send_retry_sleep_ms)
+        self.quiet = quiet
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, int(socket_sndbuf_bytes))
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, int(socket_rcvbuf_bytes))
         self.sock.bind(('0.0.0.0', self.data_port))
         self.sock.setblocking(False)
         self._stop_event = threading.Event()
@@ -103,6 +114,9 @@ class OverlayBenchNode:
         self._route_cache: dict[str, RouteInfo] = {}
         self._route_lock = threading.Lock()
         self._throughput_sessions: dict[str, ThroughputSession] = {}
+        self.send_retry_count = 0
+        self.send_retry_events = 0
+        self.send_failures = 0
 
     def close(self) -> None:
         self._stop_event.set()
@@ -117,6 +131,8 @@ class OverlayBenchNode:
         return thread
 
     def log(self, text: str) -> None:
+        if self.quiet:
+            return
         print(f'[{self.node_ip}] {text}', flush=True)
 
     def register_waiter(self, wait_kind: str, wait_id: str) -> queue.Queue[dict[str, Any]]:
@@ -200,7 +216,30 @@ class OverlayBenchNode:
         dest_ip = str(packet['dest_ip'])
         route = self.resolve_next_hop(dest_ip)
         raw = json.dumps(packet, ensure_ascii=True, separators=(',', ':')).encode('utf-8')
-        self.sock.sendto(raw, (route.next_hop_ip, self.data_port))
+        retry_used = False
+        for attempt in range(self.send_retries + 1):
+            try:
+                self.sock.sendto(raw, (route.next_hop_ip, self.data_port))
+                if retry_used:
+                    self.send_retry_events += 1
+                self.log(
+                    f"send kind={packet.get('kind')} dest={dest_ip} next_hop={route.next_hop_ip} "
+                    f"retry_used={retry_used} attempt={attempt + 1}"
+                )
+                return
+            except BlockingIOError:
+                retry_used = True
+                self.send_retry_count += 1
+                if attempt >= self.send_retries:
+                    self.send_failures += 1
+                    raise
+                if self.send_retry_sleep_ms > 0:
+                    time.sleep(self.send_retry_sleep_ms / 1000.0)
+                else:
+                    select.select([], [self.sock], [], 0.001)
+            except OSError:
+                self.send_failures += 1
+                raise
 
     def handle_ping(self, packet: dict[str, Any]) -> None:
         reply = {
@@ -342,6 +381,11 @@ def add_common_node_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--control-port', type=int, default=5100, help='Local AODV control endpoint port.')
     parser.add_argument('--route-timeout-sec', type=float, default=12.0, help='Max time to wait for route establishment.')
     parser.add_argument('--route-poll-interval-sec', type=float, default=0.2, help='Polling interval while waiting for routes.')
+    parser.add_argument('--send-retries', type=int, default=200, help='Max retries when UDP send buffer is temporarily full.')
+    parser.add_argument('--send-retry-sleep-ms', type=float, default=0.5, help='Sleep per retry after BlockingIOError.')
+    parser.add_argument('--socket-sndbuf-bytes', type=int, default=DEFAULT_SOCKET_BUFFER_BYTES, help='UDP send buffer size.')
+    parser.add_argument('--socket-rcvbuf-bytes', type=int, default=DEFAULT_SOCKET_BUFFER_BYTES, help='UDP receive buffer size.')
+    parser.add_argument('--quiet', action='store_true', help='Reduce benchmark daemon and sender log output.')
     parser.add_argument('--log-file', help='Optional log file path.')
     parser.add_argument('--json', action='store_true', help='Print only one JSON line result for sender commands.')
 
@@ -383,6 +427,11 @@ def build_node(args: argparse.Namespace) -> OverlayBenchNode:
         control_client=control,
         route_timeout_sec=args.route_timeout_sec,
         route_poll_interval_sec=args.route_poll_interval_sec,
+        send_retries=args.send_retries,
+        send_retry_sleep_ms=args.send_retry_sleep_ms,
+        socket_sndbuf_bytes=args.socket_sndbuf_bytes,
+        socket_rcvbuf_bytes=args.socket_rcvbuf_bytes,
+        quiet=args.quiet,
     )
 
 
@@ -397,6 +446,9 @@ def run_route_command(args: argparse.Namespace) -> int:
             'route_setup_sec': round(route_setup_sec, 6),
             'next_hop_ip': route.next_hop_ip,
             'hop_count': route.hop_count,
+            'send_retry_events': node.send_retry_events,
+            'send_retry_count': node.send_retry_count,
+            'send_failures': node.send_failures,
         }
         print_result(result, args.json)
         return 0
@@ -457,6 +509,9 @@ def run_latency_command(args: argparse.Namespace) -> int:
             'rtt_p95_ms': round(sorted(rtts_ms)[max(0, int(len(rtts_ms) * 0.95) - 1)], 3) if rtts_ms else None,
             'rtt_max_ms': round(max(rtts_ms), 3) if rtts_ms else None,
             'one_way_estimated_ms': round(statistics.mean(rtts_ms) / 2.0, 3) if rtts_ms else None,
+            'send_retry_events': node.send_retry_events,
+            'send_retry_count': node.send_retry_count,
+            'send_failures': node.send_failures,
         }
         print_result(result, args.json)
         return 0
@@ -533,6 +588,9 @@ def run_throughput_command(args: argparse.Namespace) -> int:
             'receiver_duration_sec': round(receiver_duration_sec, 6),
             'offered_load_mbps': round(offered_load_mbps, 6),
             'goodput_mbps': round(goodput_mbps, 6),
+            'send_retry_events': node.send_retry_events,
+            'send_retry_count': node.send_retry_count,
+            'send_failures': node.send_failures,
         }
         print_result(result, args.json)
         return 0
