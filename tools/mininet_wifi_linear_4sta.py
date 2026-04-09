@@ -65,6 +65,12 @@ def parse_args() -> argparse.Namespace:
         action='store_true',
         help='Only build topology and AODV processes, do not run the file transfer demo.',
     )
+    parser.add_argument(
+        '--link-loss',
+        type=float,
+        default=0.0,
+        help='Apply tc netem packet loss percentage on each sta wlan interface, e.g. 5 for 5%%.',
+    )
     return parser.parse_args()
 
 
@@ -142,6 +148,18 @@ def print_node_state(node) -> None:
     info(send_control(node, 'SHOW_NEIGHBORS') + '\n')
     info(f'=== {node.name} routes ===\n')
     info(send_control(node, 'SHOW_ROUTE') + '\n')
+
+
+def apply_link_loss(stations, loss_percent: float) -> None:
+    if loss_percent <= 0:
+        return
+
+    info(f'*** Applying tc netem loss={loss_percent:.2f}% on sta wlan interfaces\n')
+    for sta in stations:
+        intf = f'{sta.name}-wlan0'
+        sta.cmd(f'tc qdisc replace dev {intf} root netem loss {loss_percent:.2f}%')
+        qdisc_state = run_cmd(sta, f'tc qdisc show dev {intf}')
+        info(f'[{sta.name}] {qdisc_state}\n')
 
 
 def build_topology():
@@ -262,6 +280,8 @@ def main() -> int:
         info('*** Building Mininet-WiFi network\n')
         net.build()
 
+        apply_link_loss(stations, args.link_loss)
+
         info('*** Starting AODV node processes inside station namespaces\n')
         for sta in stations:
             start_aodv(sta, config_map[sta.name], repo_root)
@@ -305,3 +325,6 @@ def main() -> int:
 if __name__ == '__main__':
     setLogLevel('info')
     raise SystemExit(main())
+
+
+

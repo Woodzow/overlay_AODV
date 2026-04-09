@@ -100,6 +100,18 @@ sudo python3 tools/mininet_wifi_linear_4sta.py
 sudo python3 tools/mininet_wifi_linear_4sta.py --cli
 ```
 
+给四个无线接口统一加 `5%` 底层丢包率：
+
+```bash
+sudo python3 tools/mininet_wifi_linear_4sta.py --link-loss 5
+```
+
+同时保留 CLI：
+
+```bash
+sudo python3 tools/mininet_wifi_linear_4sta.py --link-loss 5 --cli
+```
+
 指定其他文件：
 
 ```bash
@@ -112,6 +124,34 @@ sudo python3 tools/mininet_wifi_linear_4sta.py --video-file another.mp4
 sudo python3 tools/mininet_wifi_linear_4sta.py --skip-file-transfer --cli
 ```
 
+## 在 Mininet-WiFi CLI 中手动设置底层丢包率
+
+给四个站点统一加 `5%` 底层丢包率：
+
+```bash
+sta1 tc qdisc replace dev sta1-wlan0 root netem loss 5%
+sta2 tc qdisc replace dev sta2-wlan0 root netem loss 5%
+sta3 tc qdisc replace dev sta3-wlan0 root netem loss 5%
+sta4 tc qdisc replace dev sta4-wlan0 root netem loss 5%
+```
+
+查看是否生效：
+
+```bash
+sta1 tc qdisc show dev sta1-wlan0
+sta2 tc qdisc show dev sta2-wlan0
+sta3 tc qdisc show dev sta3-wlan0
+sta4 tc qdisc show dev sta4-wlan0
+```
+
+删除丢包设置：
+
+```bash
+sta1 tc qdisc del dev sta1-wlan0 root
+sta2 tc qdisc del dev sta2-wlan0 root
+sta3 tc qdisc del dev sta3-wlan0 root
+sta4 tc qdisc del dev sta4-wlan0 root
+```
 ## Mininet-WiFi 中手动启动文件转发
 
 如果当前环境不能使用 `xterm`，直接在 `mininet-wifi>` 中用后台命令即可。
@@ -321,4 +361,5 @@ cat /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
 ## 示例配置
 
 - Mininet-WiFi 节点配置：`configs/mininet_wifi/sta1.json` 到 `configs/mininet_wifi/sta4.json`
+
 
