@@ -1,0 +1,18 @@
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.1 rreq_id=1 ttl=2 flags=0x08
+[sta4@10.0.0.4] 收到RREP并更新路由: dest=10.0.0.1 via=10.0.0.3 hop=3 seq=2
+[sta4@10.0.0.4] 本节点路由发现成功: dest=10.0.0.1
+[sta4@10.0.0.4] 收到RREQ: from=10.0.0.3 orig=10.0.0.3 dest=10.0.0.1 rreq_id=1 hop=0 ttl=2 flags=0x08
+[sta4@10.0.0.4] 找到目的路由，作为中间节点回RREP: dest=10.0.0.1 next_hop=10.0.0.3 hop=3
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.1 rreq_id=2 ttl=2 flags=0x08
+[sta4@10.0.0.4] 收到RREP并更新路由: dest=10.0.0.1 via=10.0.0.3 hop=3 seq=2
+[sta4@10.0.0.4] 本节点路由发现成功: dest=10.0.0.1
+[sta4@10.0.0.4] 收到RREQ: from=10.0.0.3 orig=10.0.0.3 dest=10.0.0.1 rreq_id=2 hop=0 ttl=2 flags=0x08
+[sta4@10.0.0.4] 找到目的路由，作为中间节点回RREP: dest=10.0.0.1 next_hop=10.0.0.3 hop=3
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.1 rreq_id=3 ttl=2 flags=0x08
+[sta4@10.0.0.4] 收到RREP并更新路由: dest=10.0.0.1 via=10.0.0.3 hop=3 seq=3
+[sta4@10.0.0.4] 本节点路由发现成功: dest=10.0.0.1
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.3 rreq_id=4 ttl=2 flags=0x40
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.3 rreq_id=5 ttl=3 flags=0x00
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.3 rreq_id=6 ttl=4 flags=0x00
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.3 rreq_id=7 ttl=8 flags=0x00
+[sta4@10.0.0.4] 发起RREQ: dest=10.0.0.3 rreq_id=8 ttl=8 flags=0x00

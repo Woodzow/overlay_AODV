@@ -1,0 +1,36 @@
+[10.0.0.4] listening on udp/6200
+[10.0.0.4] listening on udp/6200
+[10.0.0.4] recv meta transfer_id=4b000fef7e6f4b749554d1084a8d54d5 file=data.mp4 total_chunks=8355
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=1/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=2/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=3/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=4/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=5/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=6/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=7/8355
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=8/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=9/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=10/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=11/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=12/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1
+[10.0.0.4] recv chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 chunk=13/8355
+[10.0.0.4] send kind=ack transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.3 final_dest=10.0.0.1

@@ -1,0 +1,31 @@
+[10.0.0.4] benchmark daemon listening on udp/6300
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] benchmark daemon listening on udp/6300
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] benchmark daemon listening on udp/6300
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] send kind=throughput_report dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] benchmark daemon listening on udp/6300
+[10.0.0.4] 已触发路由发现：dest=10.0.0.1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=ping_reply dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=throughput_report dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] send kind=throughput_report dest=10.0.0.1 next_hop=10.0.0.3 retry_used=False attempt=1
+[10.0.0.4] benchmark daemon listening on udp/6300

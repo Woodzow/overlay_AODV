@@ -1,0 +1,531 @@
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      1.200 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:35    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:35    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:35    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:35    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:15:58 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:50 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:41 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:21    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:21    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:14    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.400 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:14    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:08    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.600 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:08    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      1.100 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:36    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:36    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:36    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:36    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:15:59 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:51 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:42 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:22    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:22    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:15    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:15    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:09    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.600 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:09    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      1.000 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:37    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:37    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:37    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:37    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:00 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:52 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:43 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:23    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:23    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:16    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:16    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:10    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.500 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:10    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      1.000 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:38    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:38    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:38    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:38    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:01 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:53 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:44 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:24    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:24    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:17    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:17    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:11    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.500 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:11    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      0.900 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:39    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:39    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:39    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:39    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:02 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:54 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:45 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:25    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:25    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:18    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:18    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:12    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.400 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:12    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      0.900 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:40    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:40    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:40    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:40    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:03 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:55 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:46 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:26    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:26    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:19    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:19    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:13    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.400 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:13    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      0.800 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:41    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:41    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:41    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:41    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:04 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:56 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:47 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:27    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:27    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:20    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:20    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:14    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.400 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:14    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |     9 |      0.700 |      7.500 | 133500 KB (130.37 MiB) | 200424 KB (195.73 MiB) | 23296 KB (22.75 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:42    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:42    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:42    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:42    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:05 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:57 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:48 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:28    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:28    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:21    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:21    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:15    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:15    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |     23.700 |      8.900 | 156884 KB (153.21 MiB) | 303796 KB (296.68 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:43    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:43    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:43    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:43    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:06 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:58 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:49 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:29    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21244 KB (20.75 MiB) | 00:29    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:22    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29632 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:22    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:16    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29636 KB (28.94 MiB) | 21248 KB (20.75 MiB) | 00:16    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |  23.000 |   1.400 | 23384 KB (22.84 MiB) | 103372 KB (100.95 MiB) | 23384 KB (22.84 MiB) | 00:00    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      7.700 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:44    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:44    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:44    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:44    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:07 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:15:59 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:50 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:30    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:30    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:23    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:23    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:17    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:17    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   7.000 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:01    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      4.800 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:45    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:45    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:45    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:45    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:08 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:00 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:51 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:31    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:31    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:24    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:24    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:18    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:18    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   4.100 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:02    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      3.500 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:46    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:46    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:46    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:46    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:09 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:01 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:52 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:32    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:32    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:25    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:25    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:19    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.300 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:19    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   2.800 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:03    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      2.800 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:47    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:47    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:47    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:47    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:10 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:02 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:53 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:33    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:33    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:26    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:26    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:21    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:21    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   2.200 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:04    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      2.400 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:48    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:48    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:48    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:48    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:11 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:03 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:54 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:34    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.200 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:34    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:27    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:27    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:22    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:22    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   1.800 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:05    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      2.000 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:49    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:49    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:49    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:49    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:12 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:04 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:55 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:35    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:35    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:28    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:28    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:23    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:23    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   1.500 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:06    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      1.800 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:50    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:50    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:50    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:50    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:13 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:05 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:56 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:36    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:36    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:29    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:29    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:24    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:24    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   1.300 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:07    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      1.500 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:51    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:51    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:51    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:51    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:14 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:06 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:57 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:37    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:37    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:30    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.100 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:30    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:25    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:25    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   1.100 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:08    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      1.400 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:52    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:52    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:52    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:52    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:15 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:07 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:58 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:38    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:38    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:31    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.100 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:31    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:26    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:26    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   1.000 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:09    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      1.300 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:53    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:53    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:53    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:53    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:16 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:08 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:15:59 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:39    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:39    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:32    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.100 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:32    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:27    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:27    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   0.900 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:10    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send
+
+resource_bench v1
+
+=== Summary ===
+Role            | Count | Total CPU% | Total MEM% | Total RSS            | Total VSZ            | Max VmHWM
+---------------------------------------------------------------------------------------------------------
+aodv            |     4 |      0.000 |      3.200 | 54272 KB (53.00 MiB) | 85136 KB (83.14 MiB) | 13696 KB (13.38 MiB)
+video_forwarder |    10 |      1.200 |      8.900 | 156884 KB (153.21 MiB) | 304448 KB (297.31 MiB) | 23384 KB (22.84 MiB)
+overlay_bench   |     0 |      0.000 |      0.000 | 0 KB (0.00 MiB)      | 0 KB (0.00 MiB)      | -
+
+=== Processes ===
+Role            | PID   | CPU%    | MEM%    | RSS                 | VSZ                 | VmHWM               | Elapsed  | Command
+--------------------------------------------------------------------------------------------------------------------------------------------------
+aodv            | 775445 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:54    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta1.json
+aodv            | 775447 |   0.000 |   0.800 | 13440 KB (13.12 MiB) | 21284 KB (20.79 MiB) | 13440 KB (13.12 MiB) | 01:54    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta2.json
+aodv            | 775449 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:54    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta3.json
+aodv            | 775451 |   0.000 |   0.800 | 13696 KB (13.38 MiB) | 21284 KB (20.79 MiB) | 13696 KB (13.38 MiB) | 01:54    | python3 src/main.py node --config /home/admin/overlay_AODV/configs/mininet_wifi/sta4.json
+video_forwarder | 763222 |   0.000 |   1.200 | 21248 KB (20.75 MiB) | 29856 KB (29.16 MiB) | 21248 KB (20.75 MiB) | 20:16:17 | python3 video_forwarder.py --node-ip 10.0.0.2
+video_forwarder | 763229 |   0.000 |   1.200 | 21376 KB (20.88 MiB) | 29860 KB (29.16 MiB) | 21376 KB (20.88 MiB) | 20:16:09 | python3 video_forwarder.py --node-ip 10.0.0.3
+video_forwarder | 763235 |   0.000 |   1.200 | 21372 KB (20.87 MiB) | 29788 KB (29.09 MiB) | 23296 KB (22.75 MiB) | 20:16:00 | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /tmp/received_videos
+video_forwarder | 775476 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:40    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &
+video_forwarder | 775477 |   0.100 |   1.200 | 21244 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21244 KB (20.75 MiB) | 00:40    | python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log
+video_forwarder | 775482 |   0.000 |   0.100 | 1964 KB (1.92 MiB)  | 7340 KB (7.17 MiB)  | 1964 KB (1.92 MiB)  | 00:33    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &
+video_forwarder | 775483 |   0.100 |   1.200 | 21248 KB (20.75 MiB) | 29788 KB (29.09 MiB) | 21248 KB (20.75 MiB) | 00:33    | python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+video_forwarder | 775488 |   0.000 |   0.100 | 1836 KB (1.79 MiB)  | 7340 KB (7.17 MiB)  | 1836 KB (1.79 MiB)  | 00:28    | bash -lc cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &
+video_forwarder | 775489 |   0.200 |   1.200 | 21248 KB (20.75 MiB) | 29804 KB (29.11 MiB) | 21248 KB (20.75 MiB) | 00:28    | python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+video_forwarder | 775504 |   0.800 |   1.400 | 23384 KB (22.84 MiB) | 103544 KB (101.12 MiB) | 23384 KB (22.84 MiB) | 00:11    | python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send

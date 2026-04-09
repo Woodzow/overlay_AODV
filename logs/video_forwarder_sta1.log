@@ -1,0 +1,110 @@
+[10.0.0.1] listening on udp/6200
+[10.0.0.1] start send transfer_id=2241fc5e14634005ab6122ea38effddc file=data.mp4 size=7519144 total_chunks=8355
+[10.0.0.1] 已触发路由发现：dest=10.0.0.4
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=1 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=2 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=3 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=4 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=5 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=6 error=
+[10.0.0.1] 已触发路由发现：dest=10.0.0.4
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=7 error=
+[10.0.0.1] send kind=meta transfer_id=2241fc5e14634005ab6122ea38effddc next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=meta chunk_id=-1 attempt=8 error=
+Traceback (most recent call last):
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 545, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 540, in main
+    raise sender_error[0]
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 522, in _run_sender
+    sender.run()
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 420, in run
+    self.send_with_ack(meta_packet, 'meta')
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 399, in send_with_ack
+    raise RuntimeError(f'failed after retries kind={ack_for} chunk_id={chunk_id}: {last_error}')
+RuntimeError: failed after retries kind=meta chunk_id=-1: 
+[10.0.0.1] listening on udp/6200
+[10.0.0.1] start send transfer_id=4b000fef7e6f4b749554d1084a8d54d5 file=data.mp4 size=7519144 total_chunks=8355
+[10.0.0.1] 已触发路由发现：dest=10.0.0.4
+[10.0.0.1] send kind=meta transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=meta chunk_id=-1 attempt=1 status=ok
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=0 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=0 attempt=2 status=ok
+[10.0.0.1] chunk sent 1/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=1 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=1 attempt=2 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=1 attempt=3 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=1 attempt=4 status=ok
+[10.0.0.1] chunk sent 2/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=2 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=2 attempt=2 status=ok
+[10.0.0.1] chunk sent 3/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=3 attempt=1 status=ok
+[10.0.0.1] chunk sent 4/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=4 attempt=1 status=ok
+[10.0.0.1] chunk sent 5/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=5 attempt=1 status=ok
+[10.0.0.1] chunk sent 6/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=6 attempt=1 error=
+[10.0.0.1] 已触发路由发现：dest=10.0.0.4
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=6 attempt=2 status=ok
+[10.0.0.1] chunk sent 7/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=7 attempt=1 status=ok
+[10.0.0.1] chunk sent 8/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=8 attempt=1 status=ok
+[10.0.0.1] chunk sent 9/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=9 attempt=1 status=ok
+[10.0.0.1] chunk sent 10/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=10 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=10 attempt=2 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=10 attempt=3 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=10 attempt=4 status=ok
+[10.0.0.1] chunk sent 11/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=11 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] ack kind=chunk chunk_id=11 attempt=2 status=ok
+[10.0.0.1] chunk sent 12/8355
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=12 attempt=1 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+[10.0.0.1] retry kind=chunk chunk_id=12 attempt=2 error=
+[10.0.0.1] send kind=chunk transfer_id=4b000fef7e6f4b749554d1084a8d54d5 next_hop=10.0.0.2 final_dest=10.0.0.4
+Traceback (most recent call last):
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 545, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 533, in main
+    forwarder.run()
+  File "/home/admin/overlay_AODV/src/video_forwarder.py", line 355, in run
+    readable, _, _ = select.select([self.sock], [], [], 0.5)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
