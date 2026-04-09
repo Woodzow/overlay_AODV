@@ -308,6 +308,43 @@ sta4 pkill -f "overlay_bench.py daemon"
 - `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
 - `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
 - 吞吐量结果更接近 overlay 业务层有效吞吐，不是底层 802.11 原始物理速率
+
+## Overlay CPU 与内存占用测试
+
+资源占用统计脚本：`src/resource_bench.py`
+
+在 `mininet-wifi>` 中查看当前节点全部 overlay 相关进程的 CPU 和内存占用：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+```
+
+只看 AODV 进程：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
+```
+
+输出 JSON：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
+```
+
+连续采样 10 次，每 1 秒一组：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
+```
+
+关键字段说明：
+
+- `cpu_percent`：进程 CPU 占用百分比
+- `mem_percent`：进程内存占用百分比
+- `rss_kb`：当前常驻内存
+- `vmhwm_kb`：历史峰值常驻内存
+- `vsz_kb`：虚拟内存大小
+
 ## 常用日志位置
 
 AODV 日志：
