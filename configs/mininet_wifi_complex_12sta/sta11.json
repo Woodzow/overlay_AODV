@@ -1,0 +1,40 @@
+{
+  "node_id": "sta11",
+  "bind_ip": "0.0.0.0",
+  "node_ip": "10.0.0.11",
+  "overlay_port": 5005,
+  "control_bind_ip": "127.0.0.1",
+  "control_port": 5100,
+  "hello_interval_sec": 2,
+  "hello_timeout_sec": 6,
+  "auto_neighbor_discovery": false,
+  "discovery_broadcast_ip": "10.0.0.255",
+  "bootstrap_peers": [],
+  "route_lifetime_sec": 30,
+  "path_discovery_timeout_sec": 10,
+  "rreq_ttl": 8,
+  "rreq_ttl_start": 2,
+  "rreq_ttl_increment": 1,
+  "rreq_ttl_threshold": 4,
+  "rreq_retry_wait_sec": 1,
+  "rreq_retries": 5,
+  "local_repair_enabled": true,
+  "local_repair_wait_sec": 3,
+  "rrep_ack_enabled": true,
+  "rrep_ack_timeout_sec": 1,
+  "rerr_rate_limit_sec": 1,
+  "rerr_max_dest_per_msg": 16,
+  "tx_jitter_max_ms": 10,
+  "pending_queue_limit_per_dest": 32,
+  "pending_total_limit": 256,
+  "neighbors": [
+    {
+      "node_id": "sta10",
+      "ip": "10.0.0.10"
+    },
+    {
+      "node_id": "sta12",
+      "ip": "10.0.0.12"
+    }
+  ]
+}
