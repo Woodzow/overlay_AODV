@@ -23,8 +23,11 @@
 - `src/aodv_control.py`：控制命令
 - `src/video_forwarder.py`：独立 UDP 文件转发程序
 - `tools/mininet_wifi_linear_4sta.py`：Mininet-WiFi 四节点线性拓扑一键测试
+- `tools/mininet_wifi_linear_10hop_route_bench.py`：Mininet-WiFi 线性多跳 AODV 建路时间批量测试
 - `tools/mininet_wifi_complex_12sta.py`：Mininet-WiFi 十二节点复杂拓扑一键测试
+- `tools/mininet_wifi_complex_12sta_loss_sweep.py`：Mininet-WiFi 十二节点复杂拓扑底层丢包率扫描测试
 - `configs/mininet_wifi/`：Mininet-WiFi 用的 `sta1-sta4` 配置
+- `configs/mininet_wifi_linear_10hop/`：Mininet-WiFi 用的 `sta1-sta11` 线性多跳拓扑描述
 - `configs/mininet_wifi_complex_12sta/`：Mininet-WiFi 用的 `sta1-sta12` 复杂拓扑配置
 
 ## 启动单节点
@@ -125,6 +128,47 @@ sudo python3 tools/mininet_wifi_linear_4sta.py --video-file another.mp4
 ```bash
 sudo python3 tools/mininet_wifi_linear_4sta.py --skip-file-transfer --cli
 ```
+
+## Mininet-WiFi 线性多跳建路时间测试
+
+当前线性多跳建路时间场景：
+
+- 拓扑：`sta1 - sta2 - ... - sta11`
+- 节点 IP：`10.0.0.1` 到 `10.0.0.11`
+- 默认测量范围：`sta1 -> sta2` 到 `sta1 -> sta9`，即 `1-8` 跳
+- 可选最大跳数：当前拓扑最多支持到 `10` 跳
+- 测量方式：每一跳测量前会重新启动一轮 AODV 进程，尽量避免路由缓存污染结果
+
+在 Linux 环境中执行默认 `1-8` 跳测试：
+
+```bash
+cd /home/admin/overlay_AODV
+sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py
+```
+
+把汇总结果保存到 JSON：
+
+```bash
+sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py --output-json logs/mininet_wifi_linear_10hop/results.json
+```
+
+如果需要测到 `10` 跳：
+
+```bash
+sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py --max-hop 10
+```
+
+测量完成后保留拓扑并进入 `mininet-wifi>` CLI：
+
+```bash
+sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py --cli
+```
+
+说明：
+
+- 脚本会在终端打印每一跳的 `route_setup_sec / hop_count / next_hop_ip / status`
+- 如果指定 `--output-json`，结果会写入对应 JSON 文件
+- AODV 日志和运行时配置默认保存在 `logs/mininet_wifi_linear_10hop/`
 
 ## Mininet-WiFi 十二节点复杂拓扑一键测试
 
@@ -540,6 +584,53 @@ sta12 pkill -f "overlay_bench.py daemon"
 - `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
 - `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
 - 复杂拓扑下建议结合 `SHOW_ROUTE`、`SHOW_ROUTE_DETAIL:10.0.0.12` 与 AODV 日志一起分析路径变化
+
+## 十二节点复杂拓扑底层丢包率扫描测试
+
+该场景用于批量测试底层 `tc netem loss=1%..10%` 时，`sta1 -> sta12` 的 overlay 丢包率和吞吐量变化。脚本会在每个丢包档位：
+
+- 先清理旧的 `qdisc`
+- 给全部 `staX-wlan0` 接口施加统一底层丢包率
+- 重新启动 AODV 和 `overlay_bench.py daemon`
+- 运行 `sta1 -> sta12` 的 throughput 测试
+- 输出并保存 `loss_rate / pdr / goodput_mbps / offered_load_mbps / route_setup_sec / hop_count`
+
+默认执行 `1%-10%` 丢包率扫描：
+
+```bash
+cd /home/admin/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py
+```
+
+把汇总结果写入指定 JSON：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py --output-json logs/mininet_wifi_complex_12sta_loss_sweep/results.json
+```
+
+调整 throughput 测试参数：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py --count 2000 --payload-size 1200 --interval-ms 1
+```
+
+按步长扫描，例如只测 `2% 4% 6% 8% 10%`：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py --min-loss 2 --max-loss 10 --loss-step 2
+```
+
+扫描完成后保留拓扑并进入 `mininet-wifi>` CLI：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py --cli
+```
+
+结果位置：
+
+- 汇总结果默认保存到 `logs/mininet_wifi_complex_12sta_loss_sweep/results.json`
+- 每个丢包档位会额外保存到 `logs/mininet_wifi_complex_12sta_loss_sweep/loss_XX/result.json`
+- 每个档位对应的 AODV 日志和 bench daemon 日志也会保存在对应的 `loss_XX/` 目录下
 
 ## Overlay CPU 与内存占用测试
 
