@@ -35,7 +35,7 @@ def load_base_config() -> dict:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run an 11-station linear Mininet-WiFi topology and measure AODV route discovery time for 1-10 hops."
+        description="Run an 11-station linear Mininet-WiFi topology and measure AODV route discovery time for 1-8 hops by default."
     )
     parser.add_argument(
         "--neighbor-wait-sec",
@@ -70,6 +70,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-json",
         help="Optional path to save the aggregate benchmark result as JSON.",
+    )
+    parser.add_argument(
+        "--max-hop",
+        type=int,
+        default=8,
+        help="Max hop count to measure from sta1. Default is 8. The current topology supports up to 10.",
     )
     parser.add_argument(
         "--cli",
@@ -198,8 +204,8 @@ def measure_one_hop(
     return extract_json_result(run_cmd(source_node, command))
 
 
-def print_results(results: list[dict]) -> None:
-    info("\n=== AODV route discovery time (1-10 hops) ===\n")
+def print_results(results: list[dict], max_hop: int) -> None:
+    info(f"\n=== AODV route discovery time (1-{max_hop} hops) ===\n")
     info("hop  destination  measured_hop  route_setup_sec  next_hop_ip      status\n")
     info("-------------------------------------------------------------------------\n")
     for item in results:
@@ -220,6 +226,14 @@ def print_results(results: list[dict]) -> None:
 def main() -> int:
     args = parse_args()
     topology = load_topology()
+    topology_max_hop = len(topology["stations"]) - 1
+
+    if args.max_hop < 1 or args.max_hop > topology_max_hop:
+        print(
+            f"--max-hop must be between 1 and {topology_max_hop} for the current topology.",
+            file=sys.stderr,
+        )
+        return 1
 
     if os.geteuid() != 0:
         print("This script must be run with sudo/root.", file=sys.stderr)
@@ -240,7 +254,7 @@ def main() -> int:
         info("*** Building Mininet-WiFi network\n")
         net.build()
 
-        for hop in range(1, 11):
+        for hop in range(1, args.max_hop + 1):
             dest_name = f"sta{hop + 1}"
             dest_ip = source_ip_of(topology, dest_name)
 
@@ -285,7 +299,7 @@ def main() -> int:
                     stop_aodv(sta)
                 time.sleep(float(args.round_stop_sec))
 
-        print_results(results)
+        print_results(results, args.max_hop)
 
         if args.output_json:
             output_path = Path(args.output_json)
