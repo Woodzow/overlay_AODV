@@ -23,7 +23,9 @@
 - `src/aodv_control.py`：控制命令
 - `src/video_forwarder.py`：独立 UDP 文件转发程序
 - `tools/mininet_wifi_linear_4sta.py`：Mininet-WiFi 四节点线性拓扑一键测试
+- `tools/mininet_wifi_complex_12sta.py`：Mininet-WiFi 十二节点复杂拓扑一键测试
 - `configs/mininet_wifi/`：Mininet-WiFi 用的 `sta1-sta4` 配置
+- `configs/mininet_wifi_complex_12sta/`：Mininet-WiFi 用的 `sta1-sta12` 复杂拓扑配置
 
 ## 启动单节点
 
@@ -124,6 +126,59 @@ sudo python3 tools/mininet_wifi_linear_4sta.py --video-file another.mp4
 sudo python3 tools/mininet_wifi_linear_4sta.py --skip-file-transfer --cli
 ```
 
+## Mininet-WiFi 十二节点复杂拓扑一键测试
+
+当前复杂拓扑实验场景：
+
+- 拓扑：`sta1-sta12`，邻接关系见 `configs/mininet_wifi_complex_12sta/topology.json`
+- 节点 IP：`10.0.0.1` 到 `10.0.0.12`
+- AODV：自动启动
+- 文件传输：默认把仓库根目录下的 `data.mp4` 从 `sta1` 发到 `sta12`
+- 配置目录：`configs/mininet_wifi_complex_12sta/`
+
+在 Linux 环境中执行：
+
+```bash
+cd /home/admin/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta.py
+```
+
+跑完后进入 `mininet-wifi>` CLI：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --cli
+```
+
+给十二个无线接口统一加 `5%` 底层丢包率：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --link-loss 5
+```
+
+同时保留 CLI：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --link-loss 5 --cli
+```
+
+指定其他文件：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --video-file another.mp4
+```
+
+只建网络和启动 AODV，不跑文件传输：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --skip-file-transfer --cli
+```
+
+说明：
+
+- 该场景的逻辑拓扑由 `sta1.json` 到 `sta12.json` 里的静态 `neighbors` 定义
+- Mininet-WiFi 坐标与默认通信范围记录在 `configs/mininet_wifi_complex_12sta/topology.json`
+- 现有单元测试命令不需要修改；`tests/test_mininet_wifi_complex_12sta.py` 会被 `unittest discover` 自动发现
+
 ## 在 Mininet-WiFi CLI 中手动设置底层丢包率
 
 给四个站点统一加 `5%` 底层丢包率：
@@ -152,6 +207,7 @@ sta2 tc qdisc del dev sta2-wlan0 root
 sta3 tc qdisc del dev sta3-wlan0 root
 sta4 tc qdisc del dev sta4-wlan0 root
 ```
+
 ## Mininet-WiFi 中手动启动文件转发
 
 如果当前环境不能使用 `xterm`，直接在 `mininet-wifi>` 中用后台命令即可。
@@ -196,7 +252,6 @@ sta4 sha256sum /home/admin/overlay_AODV/logs/received_videos/data.mp4
 ```
 
 两边 `sha256sum` 一致即表示传输成功。
-
 
 ## Overlay 性能测试
 
@@ -309,6 +364,183 @@ sta4 pkill -f "overlay_bench.py daemon"
 - `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
 - 吞吐量结果更接近 overlay 业务层有效吞吐，不是底层 802.11 原始物理速率
 
+## 十二节点复杂拓扑性能测试
+
+复杂拓扑性能测试沿用现有 `src/overlay_bench.py` 与 `src/resource_bench.py`，不需要新增协议代码。
+建议先启动 12 节点复杂拓扑并保留 CLI：
+
+```bash
+cd /home/admin/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta.py --skip-file-transfer --cli
+```
+
+### 1. 在 Mininet-WiFi CLI 中启动性能测试守护进程
+
+建议在除源节点 `sta1` 外的全部节点启动 `daemon`，这样复杂拓扑上的多条候选路径都能参与转发和接收：
+
+```bash
+sta2 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/bench_sta2.log > /dev/null 2>&1 &"
+sta3 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/bench_sta3.log > /dev/null 2>&1 &"
+sta4 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/bench_sta4.log > /dev/null 2>&1 &"
+sta5 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.5 --log-file /home/admin/overlay_AODV/logs/bench_sta5.log > /dev/null 2>&1 &"
+sta6 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.6 --log-file /home/admin/overlay_AODV/logs/bench_sta6.log > /dev/null 2>&1 &"
+sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.7 --log-file /home/admin/overlay_AODV/logs/bench_sta7.log > /dev/null 2>&1 &"
+sta8 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.8 --log-file /home/admin/overlay_AODV/logs/bench_sta8.log > /dev/null 2>&1 &"
+sta9 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.9 --log-file /home/admin/overlay_AODV/logs/bench_sta9.log > /dev/null 2>&1 &"
+sta10 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.10 --log-file /home/admin/overlay_AODV/logs/bench_sta10.log > /dev/null 2>&1 &"
+sta11 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.11 --log-file /home/admin/overlay_AODV/logs/bench_sta11.log > /dev/null 2>&1 &"
+sta12 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.12 --log-file /home/admin/overlay_AODV/logs/bench_sta12.log > /dev/null 2>&1 &"
+```
+
+说明：
+
+- `sta1` 不需要预先启动 `daemon`
+- `sta1` 在执行 `route / latency / throughput` 时会临时承担发送端逻辑
+- 复杂拓扑中建议把所有潜在中继节点都启动起来，而不是只开一条路径上的节点
+
+### 2. 测首次建路时间
+
+测 `sta1 -> sta12` 的第一次建路时间：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12"
+```
+
+如果需要机器可读输出：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --json"
+```
+
+关键结果字段：
+
+- `route_setup_sec`：首次建立有效路由所需时间
+- `next_hop_ip`：下一跳
+- `hop_count`：跳数
+
+### 3. 测时延、丢包率、PDR
+
+发送 20 个探测包，测 `sta1 -> sta12`：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100"
+```
+
+如果需要机器可读输出：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100 --json"
+```
+
+关键结果字段：
+
+- `route_setup_sec`
+- `rtt_min_ms / rtt_avg_ms / rtt_p95_ms / rtt_max_ms`
+- `one_way_estimated_ms`
+- `pdr`
+- `loss_rate`
+- `lost`
+
+### 4. 测吞吐量、丢包率、PDR
+
+发送 1000 个 1000 字节数据包，测 `sta1 -> sta12`：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0"
+```
+
+如果需要机器可读输出：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0 --json"
+```
+
+关键结果字段：
+
+- `route_setup_sec`
+- `offered_load_mbps`
+- `goodput_mbps`
+- `pdr`
+- `loss_rate`
+- `sent_packets / received_packets / lost_packets`
+- `duplicate_packets`
+
+### 5. 测 CPU 与内存占用
+
+查看源节点 `sta1` 当前 overlay 相关进程的 CPU 和内存占用：
+
+```bash
+sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+```
+
+查看核心中继节点 `sta7`：
+
+```bash
+sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+```
+
+查看目的节点 `sta12`：
+
+```bash
+sta12 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+```
+
+只看 AODV 进程：
+
+```bash
+sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
+```
+
+输出 JSON：
+
+```bash
+sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
+```
+
+连续采样 10 次，每 1 秒一组：
+
+```bash
+sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
+```
+
+关键字段说明：
+
+- `cpu_percent`：进程 CPU 占用百分比
+- `mem_percent`：进程内存占用百分比
+- `rss_kb`：当前常驻内存
+- `vmhwm_kb`：历史峰值常驻内存
+- `vsz_kb`：虚拟内存大小
+
+### 6. 查看性能测试日志
+
+```bash
+cat /home/admin/overlay_AODV/logs/bench_sta2.log
+cat /home/admin/overlay_AODV/logs/bench_sta7.log
+cat /home/admin/overlay_AODV/logs/bench_sta12.log
+```
+
+### 7. 停止性能测试守护进程
+
+```bash
+sta2 pkill -f "overlay_bench.py daemon"
+sta3 pkill -f "overlay_bench.py daemon"
+sta4 pkill -f "overlay_bench.py daemon"
+sta5 pkill -f "overlay_bench.py daemon"
+sta6 pkill -f "overlay_bench.py daemon"
+sta7 pkill -f "overlay_bench.py daemon"
+sta8 pkill -f "overlay_bench.py daemon"
+sta9 pkill -f "overlay_bench.py daemon"
+sta10 pkill -f "overlay_bench.py daemon"
+sta11 pkill -f "overlay_bench.py daemon"
+sta12 pkill -f "overlay_bench.py daemon"
+```
+
+说明：
+
+- `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
+- `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
+- 复杂拓扑下建议结合 `SHOW_ROUTE`、`SHOW_ROUTE_DETAIL:10.0.0.12` 与 AODV 日志一起分析路径变化
+
 ## Overlay CPU 与内存占用测试
 
 资源占用统计脚本：`src/resource_bench.py`
@@ -398,5 +630,5 @@ cat /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
 ## 示例配置
 
 - Mininet-WiFi 节点配置：`configs/mininet_wifi/sta1.json` 到 `configs/mininet_wifi/sta4.json`
-
-
+- Mininet-WiFi 十二节点复杂拓扑配置：`configs/mininet_wifi_complex_12sta/sta1.json` 到 `configs/mininet_wifi_complex_12sta/sta12.json`
+- 拓扑描述与坐标：`configs/mininet_wifi_complex_12sta/topology.json`

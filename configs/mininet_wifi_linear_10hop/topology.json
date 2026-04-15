@@ -1,0 +1,123 @@
+{
+  "name": "linear_10hop",
+  "notes": "11-station linear chain for measuring AODV route discovery time from 1 to 10 hops. sta1 is the source, and sta2-sta11 correspond to 1-10 hop destinations.",
+  "ssid": "aodv-adhoc",
+  "mode": "g",
+  "channel": 1,
+  "radio_range": 45.0,
+  "propagation_model": "logDistance",
+  "propagation_exp": 4.0,
+  "route_source": "sta1",
+  "stations": [
+    {
+      "name": "sta1",
+      "ip": "10.0.0.1/24",
+      "x": 20,
+      "y": 50
+    },
+    {
+      "name": "sta2",
+      "ip": "10.0.0.2/24",
+      "x": 60,
+      "y": 50
+    },
+    {
+      "name": "sta3",
+      "ip": "10.0.0.3/24",
+      "x": 100,
+      "y": 50
+    },
+    {
+      "name": "sta4",
+      "ip": "10.0.0.4/24",
+      "x": 140,
+      "y": 50
+    },
+    {
+      "name": "sta5",
+      "ip": "10.0.0.5/24",
+      "x": 180,
+      "y": 50
+    },
+    {
+      "name": "sta6",
+      "ip": "10.0.0.6/24",
+      "x": 220,
+      "y": 50
+    },
+    {
+      "name": "sta7",
+      "ip": "10.0.0.7/24",
+      "x": 260,
+      "y": 50
+    },
+    {
+      "name": "sta8",
+      "ip": "10.0.0.8/24",
+      "x": 300,
+      "y": 50
+    },
+    {
+      "name": "sta9",
+      "ip": "10.0.0.9/24",
+      "x": 340,
+      "y": 50
+    },
+    {
+      "name": "sta10",
+      "ip": "10.0.0.10/24",
+      "x": 380,
+      "y": 50
+    },
+    {
+      "name": "sta11",
+      "ip": "10.0.0.11/24",
+      "x": 420,
+      "y": 50
+    }
+  ],
+  "edges": {
+    "sta1": [
+      "sta2"
+    ],
+    "sta2": [
+      "sta1",
+      "sta3"
+    ],
+    "sta3": [
+      "sta2",
+      "sta4"
+    ],
+    "sta4": [
+      "sta3",
+      "sta5"
+    ],
+    "sta5": [
+      "sta4",
+      "sta6"
+    ],
+    "sta6": [
+      "sta5",
+      "sta7"
+    ],
+    "sta7": [
+      "sta6",
+      "sta8"
+    ],
+    "sta8": [
+      "sta7",
+      "sta9"
+    ],
+    "sta9": [
+      "sta8",
+      "sta10"
+    ],
+    "sta10": [
+      "sta9",
+      "sta11"
+    ],
+    "sta11": [
+      "sta10"
+    ]
+  }
+}
