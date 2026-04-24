@@ -19,6 +19,7 @@ APP_VERSION = 1
 DEFAULT_DATA_PORT = 6300
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOCKET_BUFFER_BYTES = 1_048_576
+DEFAULT_THROUGHPUT_SETTLE_MS = 200.0
 
 
 class Tee:
@@ -54,6 +55,9 @@ class ThroughputSession:
     received_bytes: int = 0
     first_rx_ns: int | None = None
     last_rx_ns: int | None = None
+    expected_packets: int | None = None
+    expected_bytes: int | None = None
+    end_received_ns: int | None = None
     seen_seqs: set[int] = field(default_factory=set)
 
 
@@ -92,6 +96,7 @@ class OverlayBenchNode:
         send_retry_sleep_ms: float,
         socket_sndbuf_bytes: int,
         socket_rcvbuf_bytes: int,
+        throughput_settle_ms: float,
         quiet: bool,
     ):
         self.node_ip = node_ip
@@ -108,6 +113,7 @@ class OverlayBenchNode:
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, int(socket_rcvbuf_bytes))
         self.sock.bind(('0.0.0.0', self.data_port))
         self.sock.setblocking(False)
+        self.throughput_settle_ns = max(0, int(float(throughput_settle_ms) * 1_000_000.0))
         self._stop_event = threading.Event()
         self._waiters: dict[tuple[str, str], queue.Queue[dict[str, Any]]] = {}
         self._waiters_lock = threading.Lock()
@@ -283,27 +289,11 @@ class OverlayBenchNode:
         session = self._throughput_sessions.get(session_id)
         if session is None:
             session = ThroughputSession(session_id=session_id, src_ip=src_ip)
-        first_rx_ns = session.first_rx_ns or 0
-        last_rx_ns = session.last_rx_ns or first_rx_ns
-        duration_ns = max(0, last_rx_ns - first_rx_ns)
-        report = {
-            'app': APP_NAME,
-            'version': APP_VERSION,
-            'kind': 'throughput_report',
-            'src_ip': self.node_ip,
-            'dest_ip': src_ip,
-            'session_id': session_id,
-            'expected_packets': int(packet['expected_packets']),
-            'expected_bytes': int(packet['expected_bytes']),
-            'received_packets': session.received_packets,
-            'received_bytes': session.received_bytes,
-            'duplicate_packets': session.duplicate_packets,
-            'first_rx_ns': first_rx_ns,
-            'last_rx_ns': last_rx_ns,
-            'duration_ns': duration_ns,
-        }
-        self.send_overlay(report)
-        self._throughput_sessions.pop(session_id, None)
+        session.expected_packets = int(packet['expected_packets'])
+        session.expected_bytes = int(packet['expected_bytes'])
+        session.end_received_ns = time.perf_counter_ns()
+        self._throughput_sessions[session_id] = session
+        self.flush_throughput_sessions()
 
     def handle_throughput_report(self, packet: dict[str, Any]) -> None:
         session_id = str(packet.get('session_id', ''))
@@ -343,16 +333,60 @@ class OverlayBenchNode:
             return
         self.handle_local(packet)
 
+    def build_throughput_report(self, session: ThroughputSession) -> dict[str, Any]:
+        first_rx_ns = session.first_rx_ns or 0
+        last_rx_ns = session.last_rx_ns or first_rx_ns
+        duration_ns = max(0, last_rx_ns - first_rx_ns)
+        return {
+            'app': APP_NAME,
+            'version': APP_VERSION,
+            'kind': 'throughput_report',
+            'src_ip': self.node_ip,
+            'dest_ip': session.src_ip,
+            'session_id': session.session_id,
+            'expected_packets': int(session.expected_packets or 0),
+            'expected_bytes': int(session.expected_bytes or 0),
+            'received_packets': session.received_packets,
+            'received_bytes': session.received_bytes,
+            'duplicate_packets': session.duplicate_packets,
+            'first_rx_ns': first_rx_ns,
+            'last_rx_ns': last_rx_ns,
+            'duration_ns': duration_ns,
+        }
+
+    def flush_throughput_sessions(self, force: bool = False) -> None:
+        now_ns = time.perf_counter_ns()
+        ready_ids: list[str] = []
+        for session_id, session in self._throughput_sessions.items():
+            if session.end_received_ns is None:
+                continue
+            if force:
+                ready_ids.append(session_id)
+                continue
+            if session.expected_packets is not None and session.received_packets >= session.expected_packets:
+                ready_ids.append(session_id)
+                continue
+            last_activity_ns = max(session.end_received_ns, session.last_rx_ns or session.end_received_ns)
+            if now_ns - last_activity_ns >= self.throughput_settle_ns:
+                ready_ids.append(session_id)
+        for session_id in ready_ids:
+            session = self._throughput_sessions.pop(session_id, None)
+            if session is None:
+                continue
+            self.send_overlay(self.build_throughput_report(session))
+
     def run(self) -> None:
         self.log(f'benchmark daemon listening on udp/{self.data_port}')
         while not self._stop_event.is_set():
+            self.flush_throughput_sessions()
             try:
-                readable, _, _ = select.select([self.sock], [], [], 0.5)
+                readable, _, _ = select.select([self.sock], [], [], 0.1)
             except (OSError, ValueError):
                 break
             for sock in readable:
                 raw, _remote = sock.recvfrom(65535)
                 self.handle_packet(raw)
+        self.flush_throughput_sessions(force=True)
 
 
 def configure_log_file(log_file: str | None) -> None:
@@ -385,6 +419,12 @@ def add_common_node_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--send-retry-sleep-ms', type=float, default=0.5, help='Sleep per retry after BlockingIOError.')
     parser.add_argument('--socket-sndbuf-bytes', type=int, default=DEFAULT_SOCKET_BUFFER_BYTES, help='UDP send buffer size.')
     parser.add_argument('--socket-rcvbuf-bytes', type=int, default=DEFAULT_SOCKET_BUFFER_BYTES, help='UDP receive buffer size.')
+    parser.add_argument(
+        '--throughput-settle-ms',
+        type=float,
+        default=DEFAULT_THROUGHPUT_SETTLE_MS,
+        help='Extra idle time after receiving throughput_end before the receiver emits a report, allowing in-flight packets to arrive.',
+    )
     parser.add_argument('--quiet', action='store_true', help='Reduce benchmark daemon and sender log output.')
     parser.add_argument('--log-file', help='Optional log file path.')
     parser.add_argument('--json', action='store_true', help='Print only one JSON line result for sender commands.')
@@ -469,6 +509,7 @@ def build_node(args: argparse.Namespace) -> OverlayBenchNode:
         send_retry_sleep_ms=args.send_retry_sleep_ms,
         socket_sndbuf_bytes=args.socket_sndbuf_bytes,
         socket_rcvbuf_bytes=args.socket_rcvbuf_bytes,
+        throughput_settle_ms=args.throughput_settle_ms,
         quiet=args.quiet,
     )
 

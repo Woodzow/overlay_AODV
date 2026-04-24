@@ -391,6 +391,8 @@ cd /home/woodzow/overlay_AODV
 sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py
 ```
 
+默认使用 `--interval-ms 1`，按带节奏的吞吐流进行扫描，避免 `interval-ms 0` 的极短突发流导致结果抖动过大。
+
 把汇总结果写入指定 JSON：
 
 ```bash

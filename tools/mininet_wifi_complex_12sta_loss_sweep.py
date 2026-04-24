@@ -89,8 +89,8 @@ def parse_args(topology: dict) -> argparse.Namespace:
     parser.add_argument(
         "--interval-ms",
         type=float,
-        default=0.0,
-        help="Delay between packets in milliseconds. 0 means send as fast as possible.",
+        default=1.0,
+        help="Delay between packets in milliseconds. Defaults to 1ms for a paced throughput stream; 0 means send as fast as possible.",
     )
     parser.add_argument(
         "--route-timeout-sec",
