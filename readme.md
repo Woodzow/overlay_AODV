@@ -302,6 +302,8 @@ sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay
 - `sent_packets / received_packets / lost_packets`
 - `duplicate_packets`
 
+其中 `goodput_mbps` 按整个测试时间窗统计，分母取发送端测试时长与接收端观测时长中的较大值，避免在高丢包下因为接收窗口缩短而出现吞吐量虚高。
+
 ### 6. 查看 benchmark 日志
 
 `benchstart` 自动拉起的 bench daemon 日志会写到：
@@ -506,4 +508,3 @@ cat /home/woodzow/overlay_AODV/logs/mininet_wifi/sta1-video_forwarder.log
 - Mininet-WiFi 线性多跳拓扑描述：`configs/mininet_wifi_linear_10hop/topology.json`
 - Mininet-WiFi 十二节点复杂拓扑配置：`configs/mininet_wifi_complex_12sta/sta1.json` 到 `configs/mininet_wifi_complex_12sta/sta12.json`
 - 拓扑描述与坐标：`configs/mininet_wifi_complex_12sta/topology.json`
-

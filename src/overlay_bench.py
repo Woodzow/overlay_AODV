@@ -390,6 +390,44 @@ def add_common_node_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--json', action='store_true', help='Print only one JSON line result for sender commands.')
 
 
+def compute_throughput_metrics(
+    *,
+    sent_packets: int,
+    payload_size: int,
+    sender_duration_sec: float,
+    report: dict[str, Any],
+) -> dict[str, Any]:
+    sent_packets = int(sent_packets)
+    payload_size = int(payload_size)
+    sent_bytes = sent_packets * payload_size
+    sender_duration_sec = max(1e-9, float(sender_duration_sec))
+    received_packets = int(report['received_packets'])
+    received_bytes = int(report['received_bytes'])
+    receiver_duration_ns = int(report.get('duration_ns', 0))
+    receiver_duration_sec = max(0.0, receiver_duration_ns / 1_000_000_000.0)
+    # Use the full test window so extra loss cannot artificially increase goodput
+    # just because the receiver observed a shorter packet span.
+    measurement_duration_sec = max(sender_duration_sec, receiver_duration_sec)
+    offered_load_mbps = (sent_bytes * 8.0) / sender_duration_sec / 1_000_000.0
+    goodput_mbps = (received_bytes * 8.0) / measurement_duration_sec / 1_000_000.0
+    loss_packets = sent_packets - received_packets
+    loss_rate = (loss_packets / sent_packets) if sent_packets else 0.0
+    return {
+        'sent_packets': sent_packets,
+        'received_packets': received_packets,
+        'lost_packets': loss_packets,
+        'sent_bytes': sent_bytes,
+        'received_bytes': received_bytes,
+        'sender_duration_sec': round(sender_duration_sec, 6),
+        'receiver_duration_sec': round(receiver_duration_sec, 6),
+        'measurement_duration_sec': round(measurement_duration_sec, 6),
+        'offered_load_mbps': round(offered_load_mbps, 6),
+        'goodput_mbps': round(goodput_mbps, 6),
+        'loss_rate': round(loss_rate, 6),
+        'pdr': round((received_packets / sent_packets) if sent_packets else 0.0, 6),
+    }
+    
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Overlay benchmark tool for route convergence, latency, throughput, and delivery ratio.')
     sub = parser.add_subparsers(dest='command', required=True)
@@ -558,17 +596,12 @@ def run_throughput_command(args: argparse.Namespace) -> int:
         node._stop_event.set()
         listener.join(timeout=1.0)
 
-        sent_packets = int(args.count)
-        sent_bytes = sent_packets * int(args.payload_size)
-        sender_duration_sec = max(1e-9, (send_end_ns - send_start_ns) / 1_000_000_000.0)
-        received_packets = int(report['received_packets'])
-        received_bytes = int(report['received_bytes'])
-        receiver_duration_ns = int(report['duration_ns'])
-        receiver_duration_sec = max(1e-9, receiver_duration_ns / 1_000_000_000.0) if received_packets > 1 else sender_duration_sec
-        offered_load_mbps = (sent_bytes * 8.0) / sender_duration_sec / 1_000_000.0
-        goodput_mbps = (received_bytes * 8.0) / receiver_duration_sec / 1_000_000.0
-        loss_packets = sent_packets - received_packets
-        loss_rate = (loss_packets / sent_packets) if sent_packets else 0.0
+        metrics = compute_throughput_metrics(
+            sent_packets=int(args.count),
+            payload_size=int(args.payload_size),
+            sender_duration_sec=(send_end_ns - send_start_ns) / 1_000_000_000.0,
+            report=report,
+        )
         result = {
             'metric': 'throughput',
             'src_ip': args.node_ip,
@@ -576,22 +609,12 @@ def run_throughput_command(args: argparse.Namespace) -> int:
             'route_setup_sec': round(route_setup_sec, 6),
             'next_hop_ip': route.next_hop_ip,
             'hop_count': route.hop_count,
-            'sent_packets': sent_packets,
-            'received_packets': received_packets,
-            'lost_packets': loss_packets,
             'duplicate_packets': int(report['duplicate_packets']),
-            'pdr': round((received_packets / sent_packets) if sent_packets else 0.0, 6),
-            'loss_rate': round(loss_rate, 6),
-            'sent_bytes': sent_bytes,
-            'received_bytes': received_bytes,
-            'sender_duration_sec': round(sender_duration_sec, 6),
-            'receiver_duration_sec': round(receiver_duration_sec, 6),
-            'offered_load_mbps': round(offered_load_mbps, 6),
-            'goodput_mbps': round(goodput_mbps, 6),
             'send_retry_events': node.send_retry_events,
             'send_retry_count': node.send_retry_count,
             'send_failures': node.send_failures,
         }
+        result.update(metrics)
         print_result(result, args.json)
         return 0
     finally:
