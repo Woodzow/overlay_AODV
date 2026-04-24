@@ -22,6 +22,10 @@ except ImportError:
 
 TOPOLOGY_FILE = Path(__file__).resolve().parents[1] / 'configs' / 'mininet_wifi_complex_12sta' / 'topology.json'
 VIDEO_DATA_PORT = 6200
+BENCH_MODE_ROUTE = 'route'
+BENCH_MODE_LATENCY = 'latency'
+BENCH_MODE_THROUGHPUT = 'throughput'
+BENCH_MODES = (BENCH_MODE_ROUTE, BENCH_MODE_LATENCY, BENCH_MODE_THROUGHPUT)
 
 
 def load_topology() -> dict:
@@ -30,7 +34,7 @@ def load_topology() -> dict:
 
 def parse_args(topology: dict) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Run the 12-station complex Mininet-WiFi topology and one-click AODV file transfer test.'
+        description='Run the 12-station complex Mininet-WiFi topology with one-click AODV file transfer or benchmark automation.'
     )
     parser.add_argument(
         '--cli',
@@ -75,6 +79,66 @@ def parse_args(topology: dict) -> argparse.Namespace:
         type=float,
         default=0.0,
         help='Apply tc netem packet loss percentage on each sta wlan interface, e.g. 5 for 5%%.',
+    )
+    parser.add_argument(
+        '--bench',
+        choices=BENCH_MODES,
+        help='Run one overlay benchmark round after AODV startup. route does not need remote daemons; latency/throughput auto-start them.',
+    )
+    parser.add_argument(
+        '--bench-source',
+        default=topology.get('video_source', 'sta1'),
+        help='Source station used by --bench. Default follows the topology file.',
+    )
+    parser.add_argument(
+        '--bench-dest',
+        default=topology.get('video_dest', 'sta12'),
+        help='Destination station used by --bench. Default follows the topology file.',
+    )
+    parser.add_argument(
+        '--bench-daemon-startup-sec',
+        type=float,
+        default=1.0,
+        help='Time to wait after auto-starting overlay_bench daemons for latency/throughput.',
+    )
+    parser.add_argument(
+        '--bench-route-timeout-sec',
+        type=float,
+        default=12.0,
+        help='Max time to wait for route establishment in overlay_bench benchmark mode.',
+    )
+    parser.add_argument(
+        '--bench-route-poll-interval-sec',
+        type=float,
+        default=0.2,
+        help='Polling interval while waiting for routes in overlay_bench benchmark mode.',
+    )
+    parser.add_argument(
+        '--bench-count',
+        type=int,
+        help='Packet/probe count for benchmark mode. Defaults: latency=20, throughput=1000.',
+    )
+    parser.add_argument(
+        '--bench-payload-size',
+        type=int,
+        help='Payload size in bytes for benchmark mode. Defaults: latency=64, throughput=1000.',
+    )
+    parser.add_argument(
+        '--bench-interval-ms',
+        type=float,
+        help='Send interval in milliseconds for benchmark mode. Defaults: latency=100, throughput=0.',
+    )
+    parser.add_argument(
+        '--bench-reply-timeout-sec',
+        type=float,
+        default=3.0,
+        help='Per-probe reply timeout used by latency benchmark mode.',
+    )
+    parser.add_argument(
+        '--bench-report-timeout-sec',
+        type=float,
+        default=10.0,
+        help='Timeout waiting for the destination report in throughput benchmark mode.',
     )
     return parser.parse_args()
 
@@ -141,6 +205,25 @@ def stop_video_forwarder(node) -> None:
     node.cmd("pkill -f 'src/video_forwarder.py --node-ip' >/dev/null 2>&1 || true")
 
 
+def start_bench_daemon(node, node_ip: str, repo_root: Path) -> None:
+    repo_text = shlex.quote(str(repo_root))
+    src_text = shlex.quote(str(repo_root / 'src'))
+    log_dir = repo_root / 'logs' / 'mininet_wifi'
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_text = shlex.quote(str(log_dir / f'{node.name}-bench.log'))
+    cmd = (
+        f"cd {repo_text} && "
+        f"PYTHONPATH={src_text} "
+        f"nohup python3 src/overlay_bench.py daemon --node-ip {node_ip} --quiet --log-file {log_text} "
+        '> /dev/null 2>&1 &'
+    )
+    node.cmd(cmd)
+
+
+def stop_bench_daemon(node) -> None:
+    node.cmd("pkill -f 'overlay_bench.py daemon' >/dev/null 2>&1 || true")
+
+
 def source_ip_of(topology: dict, station_name: str) -> str:
     for item in topology['stations']:
         if item['name'] == station_name:
@@ -154,6 +237,24 @@ def station_name_of_ip(topology: dict, target_ip: str) -> str:
         if station_ip == target_ip:
             return item['name']
     raise KeyError(f'unknown destination ip in topology: {target_ip}')
+
+
+def validate_bench_args(args: argparse.Namespace, topology: dict) -> None:
+    if not args.bench:
+        return
+    station_names = {item['name'] for item in topology['stations']}
+    if args.bench_source not in station_names:
+        raise ValueError(f'unknown --bench-source: {args.bench_source}')
+    if args.bench_dest not in station_names:
+        raise ValueError(f'unknown --bench-dest: {args.bench_dest}')
+    if args.bench_source == args.bench_dest:
+        raise ValueError('--bench-source and --bench-dest must be different stations')
+    if args.bench_count is not None and args.bench_count <= 0:
+        raise ValueError('--bench-count must be greater than zero')
+    if args.bench_payload_size is not None and args.bench_payload_size <= 0:
+        raise ValueError('--bench-payload-size must be greater than zero')
+    if args.bench_interval_ms is not None and args.bench_interval_ms < 0:
+        raise ValueError('--bench-interval-ms must be non-negative')
 
 
 def topology_edges(topology: dict) -> list[tuple[str, str]]:
@@ -189,6 +290,13 @@ def apply_link_loss(stations, loss_percent: float) -> None:
         sta.cmd(f'tc qdisc replace dev {intf} root netem loss {loss_percent:.2f}%')
         qdisc_state = run_cmd(sta, f'tc qdisc show dev {intf}')
         info(f'[{sta.name}] {qdisc_state}\n')
+
+
+def extract_json_result(text: str) -> dict:
+    for line in reversed([item.strip() for item in text.splitlines() if item.strip()]):
+        if line.startswith('{') and line.endswith('}'):
+            return json.loads(line)
+    raise ValueError(f'benchmark output did not contain a JSON object: {text}')
 
 
 def build_topology(topology: dict):
@@ -292,9 +400,120 @@ def automated_file_transfer(
     info('*** One-click file transfer succeeded\n')
 
 
+def benchmark_requires_remote_daemons(bench_mode: str) -> bool:
+    return bench_mode in {BENCH_MODE_LATENCY, BENCH_MODE_THROUGHPUT}
+
+
+def bench_count(args: argparse.Namespace) -> int:
+    if args.bench_count is not None:
+        return int(args.bench_count)
+    if args.bench == BENCH_MODE_LATENCY:
+        return 20
+    if args.bench == BENCH_MODE_THROUGHPUT:
+        return 1000
+    raise ValueError(f'unsupported benchmark mode for count: {args.bench}')
+
+
+def bench_payload_size(args: argparse.Namespace) -> int:
+    if args.bench_payload_size is not None:
+        return int(args.bench_payload_size)
+    if args.bench == BENCH_MODE_LATENCY:
+        return 64
+    if args.bench == BENCH_MODE_THROUGHPUT:
+        return 1000
+    raise ValueError(f'unsupported benchmark mode for payload size: {args.bench}')
+
+
+def bench_interval_ms(args: argparse.Namespace) -> float:
+    if args.bench_interval_ms is not None:
+        return float(args.bench_interval_ms)
+    if args.bench == BENCH_MODE_LATENCY:
+        return 100.0
+    if args.bench == BENCH_MODE_THROUGHPUT:
+        return 0.0
+    raise ValueError(f'unsupported benchmark mode for interval: {args.bench}')
+
+
+def run_overlay_bench(
+    source_node,
+    source_ip: str,
+    dest_ip: str,
+    repo_root: Path,
+    args: argparse.Namespace,
+) -> dict:
+    command = (
+        f"cd {shlex.quote(str(repo_root))} && "
+        f"PYTHONPATH={shlex.quote(str(repo_root / 'src'))} "
+        f"python3 src/overlay_bench.py {args.bench} "
+        f"--node-ip {source_ip} "
+        f"--dest-ip {dest_ip} "
+        f"--route-timeout-sec {float(args.bench_route_timeout_sec)} "
+        f"--route-poll-interval-sec {float(args.bench_route_poll_interval_sec)} "
+        '--quiet --json'
+    )
+    if args.bench == BENCH_MODE_LATENCY:
+        command += (
+            f" --count {bench_count(args)}"
+            f" --payload-size {bench_payload_size(args)}"
+            f" --interval-ms {bench_interval_ms(args)}"
+            f" --reply-timeout-sec {float(args.bench_reply_timeout_sec)}"
+        )
+    elif args.bench == BENCH_MODE_THROUGHPUT:
+        command += (
+            f" --count {bench_count(args)}"
+            f" --payload-size {bench_payload_size(args)}"
+            f" --interval-ms {bench_interval_ms(args)}"
+            f" --report-timeout-sec {float(args.bench_report_timeout_sec)}"
+        )
+    output = run_cmd(source_node, command)
+    return extract_json_result(output)
+
+
+def print_bench_result(result: dict) -> None:
+    info('\n=== overlay benchmark result ===\n')
+    for key, value in result.items():
+        info(f'{key}={value}\n')
+    info('json=' + json.dumps(result, ensure_ascii=True, separators=(',', ':')) + '\n')
+
+
+def run_one_click_benchmark(repo_root: Path, stations, topology: dict, args: argparse.Namespace) -> None:
+    stations_by_name = {node.name: node for node in stations}
+    source_name = args.bench_source
+    dest_name = args.bench_dest
+    source_node = stations_by_name[source_name]
+    source_ip = source_ip_of(topology, source_name)
+    dest_ip = source_ip_of(topology, dest_name)
+
+    if benchmark_requires_remote_daemons(args.bench):
+        info('*** Auto-starting overlay_bench daemons on relay/destination nodes\n')
+        for node in stations:
+            if node.name == source_name:
+                continue
+            start_bench_daemon(node, source_ip_of(topology, node.name), repo_root)
+        time.sleep(float(args.bench_daemon_startup_sec))
+
+    info(f'*** Running one-click benchmark mode={args.bench} ({source_name} -> {dest_name})\n')
+    result = run_overlay_bench(
+        source_node=source_node,
+        source_ip=source_ip,
+        dest_ip=dest_ip,
+        repo_root=repo_root,
+        args=args,
+    )
+    result['source'] = source_name
+    result['destination'] = dest_name
+    print_bench_result(result)
+
+
 def main() -> int:
     topology = load_topology()
     args = parse_args(topology)
+
+    try:
+        validate_bench_args(args, topology)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
     if os.geteuid() != 0:
         print('This script must be run with sudo/root.', file=sys.stderr)
@@ -306,7 +525,7 @@ def main() -> int:
         video_file = repo_root / video_file
     video_file = video_file.resolve()
 
-    if (not args.skip_file_transfer) and (not video_file.is_file()):
+    if (not args.bench) and (not args.skip_file_transfer) and (not video_file.is_file()):
         print(f'Video file not found: {video_file}', file=sys.stderr)
         return 1
 
@@ -340,15 +559,24 @@ def main() -> int:
         info(f'*** Waiting {args.neighbor_wait_sec:.1f}s before querying AODV state\n')
         time.sleep(args.neighbor_wait_sec)
 
-        stations_by_name = {node.name: node for node in stations}
-        print_underlay_checks(stations_by_name, topology)
-
-        for sta in stations:
-            print_node_state(sta)
-
-        if args.skip_file_transfer:
+        if args.bench:
+            info('*** Benchmark mode enabled; skipping full underlay/AODV state dump\n')
+            if not args.skip_file_transfer:
+                info('*** Benchmark mode requested; skipping file transfer step\n')
+            run_one_click_benchmark(
+                repo_root=repo_root,
+                stations=stations,
+                topology=topology,
+                args=args,
+            )
+        elif args.skip_file_transfer:
             info('*** File transfer step skipped by --skip-file-transfer\n')
         else:
+            stations_by_name = {node.name: node for node in stations}
+            print_underlay_checks(stations_by_name, topology)
+
+            for sta in stations:
+                print_node_state(sta)
             automated_file_transfer(
                 repo_root=repo_root,
                 stations=stations,
@@ -364,6 +592,9 @@ def main() -> int:
             CLI(net)
         return 0
     finally:
+        info('*** Stopping overlay_bench daemons\n')
+        for sta in stations:
+            stop_bench_daemon(sta)
         info('*** Stopping video_forwarder processes\n')
         for sta in stations:
             stop_video_forwarder(sta)

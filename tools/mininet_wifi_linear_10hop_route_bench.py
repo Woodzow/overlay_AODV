@@ -22,7 +22,7 @@ except ImportError:
 
 
 TOPOLOGY_FILE = Path(__file__).resolve().parents[1] / "configs" / "mininet_wifi_linear_10hop" / "topology.json"
-BASE_CONFIG_FILE = Path(__file__).resolve().parents[1] / "configs" / "mininet_wifi" / "sta1.json"
+BASE_CONFIG_FILE = Path(__file__).resolve().parents[1] / "configs" / "mininet_wifi_linear_10hop" / "base_config.json"
 
 
 def load_topology() -> dict:

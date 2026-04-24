@@ -22,11 +22,9 @@
 - `src/aodv_ack_manager.py`：RREP-ACK 等待状态
 - `src/aodv_control.py`：控制命令
 - `src/video_forwarder.py`：独立 UDP 文件转发程序
-- `tools/mininet_wifi_linear_4sta.py`：Mininet-WiFi 四节点线性拓扑一键测试
 - `tools/mininet_wifi_linear_10hop_route_bench.py`：Mininet-WiFi 线性多跳 AODV 建路时间批量测试
 - `tools/mininet_wifi_complex_12sta.py`：Mininet-WiFi 十二节点复杂拓扑一键测试
 - `tools/mininet_wifi_complex_12sta_loss_sweep.py`：Mininet-WiFi 十二节点复杂拓扑底层丢包率扫描测试
-- `configs/mininet_wifi/`：Mininet-WiFi 用的 `sta1-sta4` 配置
 - `configs/mininet_wifi_linear_10hop/`：Mininet-WiFi 用的 `sta1-sta11` 线性多跳拓扑描述
 - `configs/mininet_wifi_complex_12sta/`：Mininet-WiFi 用的 `sta1-sta12` 复杂拓扑配置
 
@@ -71,62 +69,16 @@ python3 -m unittest discover -s tests -p "test_*.py" -v
 sta2 python3 -c "import socket; s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.settimeout(3); s.sendto(b'SHOW_ROUTE', ('127.0.0.1', 5100)); print(s.recvfrom(8192)[0].decode())"
 ```
 
-查看 `sta2` 到 `10.0.0.4` 的详细路由：
+查看 `sta7` 到 `10.0.0.12` 的详细路由：
 
 ```bash
-sta2 python3 -c "import socket; s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.settimeout(3); s.sendto(b'SHOW_ROUTE_DETAIL:10.0.0.4', ('127.0.0.1', 5100)); print(s.recvfrom(8192)[0].decode())"
+sta7 python3 -c "import socket; s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.settimeout(3); s.sendto(b'SHOW_ROUTE_DETAIL:10.0.0.12', ('127.0.0.1', 5100)); print(s.recvfrom(8192)[0].decode())"
 ```
 
-触发 `sta4 -> 10.0.0.1` 的路由发现：
+触发 `sta12 -> 10.0.0.1` 的路由发现：
 
 ```bash
-sta4 python3 -c "import socket; s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.settimeout(3); s.sendto(b'DISCOVER_ROUTE:10.0.0.1', ('127.0.0.1', 5100)); print(s.recvfrom(8192)[0].decode())"
-```
-
-## Mininet-WiFi 四节点线性拓扑一键测试
-
-当前默认实验场景：
-
-- 拓扑：`sta1 - sta2 - sta3 - sta4`
-- 节点 IP：`10.0.0.1` 到 `10.0.0.4`
-- AODV：自动启动
-- 文件传输：自动把仓库根目录下的 `data.mp4` 从 `sta1` 发到 `sta4`
-
-在 Linux 环境中执行：
-
-```bash
-cd /home/admin/overlay_AODV
-sudo python3 tools/mininet_wifi_linear_4sta.py
-```
-
-跑完后进入 `mininet-wifi>` CLI：
-
-```bash
-sudo python3 tools/mininet_wifi_linear_4sta.py --cli
-```
-
-给四个无线接口统一加 `5%` 底层丢包率：
-
-```bash
-sudo python3 tools/mininet_wifi_linear_4sta.py --link-loss 5
-```
-
-同时保留 CLI：
-
-```bash
-sudo python3 tools/mininet_wifi_linear_4sta.py --link-loss 5 --cli
-```
-
-指定其他文件：
-
-```bash
-sudo python3 tools/mininet_wifi_linear_4sta.py --video-file another.mp4
-```
-
-只建网络和启动 AODV，不跑文件传输：
-
-```bash
-sudo python3 tools/mininet_wifi_linear_4sta.py --skip-file-transfer --cli
+sta12 python3 -c "import socket; s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.settimeout(3); s.sendto(b'DISCOVER_ROUTE:10.0.0.1', ('127.0.0.1', 5100)); print(s.recvfrom(8192)[0].decode())"
 ```
 
 ## Mininet-WiFi 线性多跳建路时间测试
@@ -142,7 +94,7 @@ sudo python3 tools/mininet_wifi_linear_4sta.py --skip-file-transfer --cli
 在 Linux 环境中执行默认 `1-8` 跳测试：
 
 ```bash
-cd /home/admin/overlay_AODV
+cd /home/woodzow/overlay_AODV
 sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py
 ```
 
@@ -183,7 +135,7 @@ sudo python3 tools/mininet_wifi_linear_10hop_route_bench.py --cli
 在 Linux 环境中执行：
 
 ```bash
-cd /home/admin/overlay_AODV
+cd /home/woodzow/overlay_AODV
 sudo python3 tools/mininet_wifi_complex_12sta.py
 ```
 
@@ -225,235 +177,52 @@ sudo python3 tools/mininet_wifi_complex_12sta.py --skip-file-transfer --cli
 
 ## 在 Mininet-WiFi CLI 中手动设置底层丢包率
 
-给四个站点统一加 `5%` 底层丢包率：
+给 12 个站点统一加 `5%` 底层丢包率：
 
 ```bash
-sta1 tc qdisc replace dev sta1-wlan0 root netem loss 5%
-sta2 tc qdisc replace dev sta2-wlan0 root netem loss 5%
-sta3 tc qdisc replace dev sta3-wlan0 root netem loss 5%
-sta4 tc qdisc replace dev sta4-wlan0 root netem loss 5%
+for i in $(seq 1 12); do
+  sta${i} tc qdisc replace dev sta${i}-wlan0 root netem loss 5%
+done
 ```
 
 查看是否生效：
 
 ```bash
-sta1 tc qdisc show dev sta1-wlan0
-sta2 tc qdisc show dev sta2-wlan0
-sta3 tc qdisc show dev sta3-wlan0
-sta4 tc qdisc show dev sta4-wlan0
+for i in $(seq 1 12); do
+  sta${i} tc qdisc show dev sta${i}-wlan0
+done
 ```
 
 删除丢包设置：
 
 ```bash
-sta1 tc qdisc del dev sta1-wlan0 root
-sta2 tc qdisc del dev sta2-wlan0 root
-sta3 tc qdisc del dev sta3-wlan0 root
-sta4 tc qdisc del dev sta4-wlan0 root
+for i in $(seq 1 12); do
+  sta${i} tc qdisc del dev sta${i}-wlan0 root
+done
 ```
-
-## Mininet-WiFi 中手动启动文件转发
-
-如果当前环境不能使用 `xterm`，直接在 `mininet-wifi>` 中用后台命令即可。
-
-启动 `sta2` 转发器：
-
-```bash
-sta2 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta2.log > /dev/null 2>&1 &"
-```
-
-启动 `sta3` 转发器：
-
-```bash
-sta3 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta3.log > /dev/null 2>&1 &"
-```
-
-启动 `sta4` 接收端：
-
-```bash
-sta4 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.4 --output-dir /home/admin/overlay_AODV/logs/received_videos --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta4.log > /dev/null 2>&1 &"
-```
-
-从 `sta1` 发送 `/home/admin/overlay_AODV/data.mp4` 到 `sta4`：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 video_forwarder.py --node-ip 10.0.0.1 --send-file /home/admin/overlay_AODV/data.mp4 --dest-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/video_forwarder_sta1.log --exit-after-send"
-```
-
-## 手动校验文件传输
-
-查看接收文件：
-
-```bash
-sta4 ls -l /home/admin/overlay_AODV/logs/received_videos
-```
-
-校验源文件和目的文件哈希：
-
-```bash
-sta1 sha256sum /home/admin/overlay_AODV/data.mp4
-sta4 sha256sum /home/admin/overlay_AODV/logs/received_videos/data.mp4
-```
-
-两边 `sha256sum` 一致即表示传输成功。
-
-## Overlay 性能测试
-
-性能测试脚本：`src/overlay_bench.py`
-
-支持的测试模式：
-
-- `daemon`：在中间节点和目的节点启动测试守护进程
-- `route`：测第一次路由建立时间
-- `latency`：测 RTT、估计单向时延、丢包率、PDR
-- `throughput`：测吞吐量、PDR、丢包率
-
-### 1. 在 Mininet-WiFi CLI 中启动性能测试守护进程
-
-先在 `sta2`、`sta3`、`sta4` 启动守护进程：
-
-```bash
-sta2 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/bench_sta2.log > /dev/null 2>&1 &"
-sta3 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/bench_sta3.log > /dev/null 2>&1 &"
-sta4 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/bench_sta4.log > /dev/null 2>&1 &"
-```
-
-说明：
-
-- `sta1` 不需要先启动 `daemon`
-- `sta1` 在执行 `route / latency / throughput` 命令时会临时启动自己的发送端逻辑
-
-### 2. 测路由收敛时间
-
-测 `sta1 -> sta4` 的第一次建路时间：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.4"
-```
-
-关键结果字段：
-
-- `route_setup_sec`：第一次建立有效路由所需时间
-- `next_hop_ip`：下一跳
-- `hop_count`：跳数
-
-### 3. 测端到端时延、丢包率、PDR
-
-发送 20 个探测包：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.4 --count 20 --payload-size 64 --interval-ms 100"
-```
-
-关键结果字段：
-
-- `route_setup_sec`：路由建立时间
-- `rtt_min_ms`
-- `rtt_avg_ms`
-- `rtt_p95_ms`
-- `rtt_max_ms`
-- `one_way_estimated_ms`：按 `RTT/2` 估算的单向时延
-- `pdr`：包投递率
-- `loss_rate`：丢包率
-
-如果需要机器可读输出：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.4 --count 20 --payload-size 64 --interval-ms 100 --json"
-```
-
-### 4. 测吞吐量、PDR、丢包率
-
-发送 1000 个 1000 字节数据包：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.4 --count 1000 --payload-size 1000 --interval-ms 0"
-```
-
-关键结果字段：
-
-- `route_setup_sec`：路由建立时间
-- `offered_load_mbps`：发送端注入速率
-- `goodput_mbps`：接收端有效吞吐量
-- `pdr`：包投递率
-- `loss_rate`：丢包率
-- `sent_packets / received_packets / lost_packets`
-- `duplicate_packets`
-
-如果需要机器可读输出：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.4 --count 1000 --payload-size 1000 --interval-ms 0 --json"
-```
-
-### 5. 查看性能测试日志
-
-```bash
-cat /home/admin/overlay_AODV/logs/bench_sta2.log
-cat /home/admin/overlay_AODV/logs/bench_sta3.log
-cat /home/admin/overlay_AODV/logs/bench_sta4.log
-```
-
-### 6. 停止性能测试守护进程
-
-```bash
-sta2 pkill -f "overlay_bench.py daemon"
-sta3 pkill -f "overlay_bench.py daemon"
-sta4 pkill -f "overlay_bench.py daemon"
-```
-
-说明：
-
-- `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
-- `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
-- 吞吐量结果更接近 overlay 业务层有效吞吐，不是底层 802.11 原始物理速率
 
 ## 十二节点复杂拓扑性能测试
 
-复杂拓扑性能测试沿用现有 `src/overlay_bench.py` 与 `src/resource_bench.py`，不需要新增协议代码。
-建议先启动 12 节点复杂拓扑并保留 CLI：
+复杂拓扑性能测试沿用现有 `src/overlay_bench.py` 与 `src/resource_bench.py`，但现在不需要手动在 `sta2-sta12` 逐个启动 `overlay_bench.py daemon` 了。
+`tools/mininet_wifi_complex_12sta.py --bench ...` 会自动完成以下步骤：
+
+- 建立 12 节点复杂拓扑并启动全部 AODV 进程
+- 等待邻居稳定
+- 在 `latency / throughput` 模式下自动拉起中继与目标节点的 bench daemon
+- 在源节点执行一次 benchmark 并打印结果
+- 默认测试结束后自动清理；如果附加 `--cli`，则保留拓扑进入 `mininet-wifi>`
+
+### 1. 一键测首次建路时间
 
 ```bash
-cd /home/admin/overlay_AODV
-sudo python3 tools/mininet_wifi_complex_12sta.py --skip-file-transfer --cli
+cd /home/woodzow/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench route
 ```
 
-### 1. 在 Mininet-WiFi CLI 中启动性能测试守护进程
-
-建议在除源节点 `sta1` 外的全部节点启动 `daemon`，这样复杂拓扑上的多条候选路径都能参与转发和接收：
+如需保留拓扑进入 CLI：
 
 ```bash
-sta2 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.2 --log-file /home/admin/overlay_AODV/logs/bench_sta2.log > /dev/null 2>&1 &"
-sta3 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.3 --log-file /home/admin/overlay_AODV/logs/bench_sta3.log > /dev/null 2>&1 &"
-sta4 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.4 --log-file /home/admin/overlay_AODV/logs/bench_sta4.log > /dev/null 2>&1 &"
-sta5 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.5 --log-file /home/admin/overlay_AODV/logs/bench_sta5.log > /dev/null 2>&1 &"
-sta6 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.6 --log-file /home/admin/overlay_AODV/logs/bench_sta6.log > /dev/null 2>&1 &"
-sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.7 --log-file /home/admin/overlay_AODV/logs/bench_sta7.log > /dev/null 2>&1 &"
-sta8 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.8 --log-file /home/admin/overlay_AODV/logs/bench_sta8.log > /dev/null 2>&1 &"
-sta9 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.9 --log-file /home/admin/overlay_AODV/logs/bench_sta9.log > /dev/null 2>&1 &"
-sta10 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.10 --log-file /home/admin/overlay_AODV/logs/bench_sta10.log > /dev/null 2>&1 &"
-sta11 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.11 --log-file /home/admin/overlay_AODV/logs/bench_sta11.log > /dev/null 2>&1 &"
-sta12 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py daemon --node-ip 10.0.0.12 --log-file /home/admin/overlay_AODV/logs/bench_sta12.log > /dev/null 2>&1 &"
-```
-
-说明：
-
-- `sta1` 不需要预先启动 `daemon`
-- `sta1` 在执行 `route / latency / throughput` 时会临时承担发送端逻辑
-- 复杂拓扑中建议把所有潜在中继节点都启动起来，而不是只开一条路径上的节点
-
-### 2. 测首次建路时间
-
-测 `sta1 -> sta12` 的第一次建路时间：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12"
-```
-
-如果需要机器可读输出：
-
-```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --json"
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench route --cli
 ```
 
 关键结果字段：
@@ -462,18 +231,17 @@ sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_b
 - `next_hop_ip`：下一跳
 - `hop_count`：跳数
 
-### 3. 测时延、丢包率、PDR
-
-发送 20 个探测包，测 `sta1 -> sta12`：
+### 2. 一键测端到端时延、丢包率、PDR
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100"
+cd /home/woodzow/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency
 ```
 
-如果需要机器可读输出：
+默认等价于：`20` 个探测包、`64` 字节载荷、`100ms` 间隔。若需调整：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100 --json"
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-count 50 --bench-payload-size 128 --bench-interval-ms 50
 ```
 
 关键结果字段：
@@ -485,18 +253,17 @@ sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_b
 - `loss_rate`
 - `lost`
 
-### 4. 测吞吐量、丢包率、PDR
-
-发送 1000 个 1000 字节数据包，测 `sta1 -> sta12`：
+### 3. 一键测吞吐量、丢包率、PDR
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0"
+cd /home/woodzow/overlay_AODV
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench throughput
 ```
 
-如果需要机器可读输出：
+默认等价于：`1000` 个数据包、`1000` 字节载荷、`0ms` 间隔。若需调整：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0 --json"
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench throughput --bench-count 2000 --bench-payload-size 1200 --bench-interval-ms 1
 ```
 
 关键结果字段：
@@ -509,42 +276,60 @@ sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 overlay_b
 - `sent_packets / received_packets / lost_packets`
 - `duplicate_packets`
 
-### 5. 测 CPU 与内存占用
+### 4. 指定源和目的节点
+
+默认测试源和目的节点取自拓扑中的 `sta1 -> sta12`。如果需要改成其他节点：
+
+```bash
+sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-source sta3 --bench-dest sta11
+```
+
+### 5. 查看 benchmark 日志
+
+自动拉起的 bench daemon 日志会写到：
+
+```bash
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta2-bench.log
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta7-bench.log
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta12-bench.log
+```
+
+### 6. 测 CPU 与内存占用
 
 查看源节点 `sta1` 当前 overlay 相关进程的 CPU 和内存占用：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
 ```
 
 查看核心中继节点 `sta7`：
 
 ```bash
-sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+sta7 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
 ```
 
 查看目的节点 `sta12`：
 
 ```bash
-sta12 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+sta12 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
 ```
 
 只看 AODV 进程：
 
 ```bash
-sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
+sta7 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
 ```
 
 输出 JSON：
 
 ```bash
-sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
+sta7 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
 ```
 
 连续采样 10 次，每 1 秒一组：
 
 ```bash
-sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
+sta7 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
 ```
 
 关键字段说明：
@@ -555,35 +340,11 @@ sta7 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_
 - `vmhwm_kb`：历史峰值常驻内存
 - `vsz_kb`：虚拟内存大小
 
-### 6. 查看性能测试日志
-
-```bash
-cat /home/admin/overlay_AODV/logs/bench_sta2.log
-cat /home/admin/overlay_AODV/logs/bench_sta7.log
-cat /home/admin/overlay_AODV/logs/bench_sta12.log
-```
-
-### 7. 停止性能测试守护进程
-
-```bash
-sta2 pkill -f "overlay_bench.py daemon"
-sta3 pkill -f "overlay_bench.py daemon"
-sta4 pkill -f "overlay_bench.py daemon"
-sta5 pkill -f "overlay_bench.py daemon"
-sta6 pkill -f "overlay_bench.py daemon"
-sta7 pkill -f "overlay_bench.py daemon"
-sta8 pkill -f "overlay_bench.py daemon"
-sta9 pkill -f "overlay_bench.py daemon"
-sta10 pkill -f "overlay_bench.py daemon"
-sta11 pkill -f "overlay_bench.py daemon"
-sta12 pkill -f "overlay_bench.py daemon"
-```
-
 说明：
 
 - `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
 - `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
-- 复杂拓扑下建议结合 `SHOW_ROUTE`、`SHOW_ROUTE_DETAIL:10.0.0.12` 与 AODV 日志一起分析路径变化
+- 如果需要在 benchmark 后继续排查路径变化，可附加 `--cli` 并结合 `SHOW_ROUTE`、`SHOW_ROUTE_DETAIL:10.0.0.12` 与 AODV 日志一起分析
 
 ## 十二节点复杂拓扑底层丢包率扫描测试
 
@@ -598,7 +359,7 @@ sta12 pkill -f "overlay_bench.py daemon"
 默认执行 `1%-10%` 丢包率扫描：
 
 ```bash
-cd /home/admin/overlay_AODV
+cd /home/woodzow/overlay_AODV
 sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py
 ```
 
@@ -639,25 +400,25 @@ sudo python3 tools/mininet_wifi_complex_12sta_loss_sweep.py --cli
 在 `mininet-wifi>` 中查看当前节点全部 overlay 相关进程的 CPU 和内存占用：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py"
 ```
 
 只看 AODV 进程：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --role aodv"
 ```
 
 输出 JSON：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --json"
 ```
 
 连续采样 10 次，每 1 秒一组：
 
 ```bash
-sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resource_bench.py --watch-sec 1 --samples 10"
 ```
 
 关键字段说明：
@@ -673,34 +434,29 @@ sta1 bash -lc "cd /home/admin/overlay_AODV/src && PYTHONPATH=. python3 resource_
 AODV 日志：
 
 ```bash
-/home/admin/overlay_AODV/logs/mininet_wifi/sta1-aodv.out
-/home/admin/overlay_AODV/logs/mininet_wifi/sta2-aodv.out
-/home/admin/overlay_AODV/logs/mininet_wifi/sta3-aodv.out
-/home/admin/overlay_AODV/logs/mininet_wifi/sta4-aodv.out
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta1-aodv.out
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta12-aodv.out
 ```
 
 `video_forwarder` 日志：
 
 ```bash
-/home/admin/overlay_AODV/logs/video_forwarder_sta1.log
-/home/admin/overlay_AODV/logs/video_forwarder_sta2.log
-/home/admin/overlay_AODV/logs/video_forwarder_sta3.log
-/home/admin/overlay_AODV/logs/video_forwarder_sta4.log
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta1-video_forwarder.log
+/home/woodzow/overlay_AODV/logs/mininet_wifi/sta12-video_forwarder.log
 ```
 
 接收文件目录：
 
 ```bash
-/home/admin/overlay_AODV/logs/received_videos
+/home/woodzow/overlay_AODV/logs/received_videos
 ```
 
 查看日志示例：
 
 ```bash
-cat /home/admin/overlay_AODV/logs/mininet_wifi/sta2-aodv.out
-cat /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
+cat /home/woodzow/overlay_AODV/logs/mininet_wifi/sta12-aodv.out
+cat /home/woodzow/overlay_AODV/logs/mininet_wifi/sta1-video_forwarder.log
 ```
-
 ## 关键参数与推荐值
 
 - `hello_interval_sec`: 10
@@ -720,6 +476,9 @@ cat /home/admin/overlay_AODV/logs/video_forwarder_sta3.log
 
 ## 示例配置
 
-- Mininet-WiFi 节点配置：`configs/mininet_wifi/sta1.json` 到 `configs/mininet_wifi/sta4.json`
+- Mininet-WiFi 线性多跳基线配置：`configs/mininet_wifi_linear_10hop/base_config.json`
+- Mininet-WiFi 线性多跳拓扑描述：`configs/mininet_wifi_linear_10hop/topology.json`
 - Mininet-WiFi 十二节点复杂拓扑配置：`configs/mininet_wifi_complex_12sta/sta1.json` 到 `configs/mininet_wifi_complex_12sta/sta12.json`
 - 拓扑描述与坐标：`configs/mininet_wifi_complex_12sta/topology.json`
+
+
