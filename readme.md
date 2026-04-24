@@ -203,26 +203,50 @@ done
 
 ## 十二节点复杂拓扑性能测试
 
-复杂拓扑性能测试沿用现有 `src/overlay_bench.py` 与 `src/resource_bench.py`，但现在不需要手动在 `sta2-sta12` 逐个启动 `overlay_bench.py daemon` 了。
-`tools/mininet_wifi_complex_12sta.py --bench ...` 会自动完成以下步骤：
+复杂拓扑性能测试沿用现有 `src/overlay_bench.py` 与 `src/resource_bench.py`，但现在在 `mininet-wifi>` CLI 里不需要再手动输入一长串守护进程启动命令了。
+进入 CLI 后可直接使用新增命令：
 
-- 建立 12 节点复杂拓扑并启动全部 AODV 进程
-- 等待邻居稳定
-- 在 `latency / throughput` 模式下自动拉起中继与目标节点的 bench daemon
-- 在源节点执行一次 benchmark 并打印结果
-- 默认测试结束后自动清理；如果附加 `--cli`，则保留拓扑进入 `mininet-wifi>`
+- `benchstart`：一键启动性能测试守护进程，默认跳过源节点 `sta1`
+- `benchstart sta3`：如果你准备从 `sta3` 发起测试，则跳过 `sta3`
+- `benchstop`：停止全部性能测试守护进程
 
-### 1. 一键测首次建路时间
+### 1. 先进入 Mininet-WiFi CLI
 
 ```bash
 cd /home/woodzow/overlay_AODV
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench route
+sudo python3 tools/mininet_wifi_complex_12sta.py --skip-file-transfer --cli
 ```
 
-如需保留拓扑进入 CLI：
+进入 `mininet-wifi>` 后，脚本会提示可用的自定义 CLI 命令。
+
+### 2. 一词启动性能测试守护进程
+
+如果测试源节点仍然是默认的 `sta1`，直接输入：
 
 ```bash
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench route --cli
+benchstart
+```
+
+如果你准备从其他源节点发起测试，例如 `sta3`，则输入：
+
+```bash
+benchstart sta3
+```
+
+执行完成后，`latency / throughput` 所需的 relay 和 destination bench daemon 都会自动准备好。
+
+### 3. 在 CLI 中手动测首次建路时间
+
+`route` 模式本身不依赖远端 bench daemon，因此可以直接测：
+
+```bash
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12"
+```
+
+如需机器可读输出：
+
+```bash
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py route --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --json"
 ```
 
 关键结果字段：
@@ -231,17 +255,18 @@ sudo python3 tools/mininet_wifi_complex_12sta.py --bench route --cli
 - `next_hop_ip`：下一跳
 - `hop_count`：跳数
 
-### 2. 一键测端到端时延、丢包率、PDR
+### 4. 在 CLI 中手动测端到端时延、丢包率、PDR
+
+先执行一次 `benchstart`，再在源节点运行：
 
 ```bash
-cd /home/woodzow/overlay_AODV
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100"
 ```
 
-默认等价于：`20` 个探测包、`64` 字节载荷、`100ms` 间隔。若需调整：
+如需机器可读输出：
 
 ```bash
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-count 50 --bench-payload-size 128 --bench-interval-ms 50
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py latency --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 20 --payload-size 64 --interval-ms 100 --json"
 ```
 
 关键结果字段：
@@ -253,17 +278,18 @@ sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-count 5
 - `loss_rate`
 - `lost`
 
-### 3. 一键测吞吐量、丢包率、PDR
+### 5. 在 CLI 中手动测吞吐量、丢包率、PDR
+
+同样先执行一次 `benchstart`，再在源节点运行：
 
 ```bash
-cd /home/woodzow/overlay_AODV
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench throughput
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0"
 ```
 
-默认等价于：`1000` 个数据包、`1000` 字节载荷、`0ms` 间隔。若需调整：
+如需机器可读输出：
 
 ```bash
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench throughput --bench-count 2000 --bench-payload-size 1200 --bench-interval-ms 1
+sta1 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 overlay_bench.py throughput --node-ip 10.0.0.1 --dest-ip 10.0.0.12 --count 1000 --payload-size 1000 --interval-ms 0 --json"
 ```
 
 关键结果字段：
@@ -276,17 +302,9 @@ sudo python3 tools/mininet_wifi_complex_12sta.py --bench throughput --bench-coun
 - `sent_packets / received_packets / lost_packets`
 - `duplicate_packets`
 
-### 4. 指定源和目的节点
+### 6. 查看 benchmark 日志
 
-默认测试源和目的节点取自拓扑中的 `sta1 -> sta12`。如果需要改成其他节点：
-
-```bash
-sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-source sta3 --bench-dest sta11
-```
-
-### 5. 查看 benchmark 日志
-
-自动拉起的 bench daemon 日志会写到：
+`benchstart` 自动拉起的 bench daemon 日志会写到：
 
 ```bash
 /home/woodzow/overlay_AODV/logs/mininet_wifi/sta2-bench.log
@@ -294,7 +312,15 @@ sudo python3 tools/mininet_wifi_complex_12sta.py --bench latency --bench-source 
 /home/woodzow/overlay_AODV/logs/mininet_wifi/sta12-bench.log
 ```
 
-### 6. 测 CPU 与内存占用
+### 7. 停止性能测试守护进程
+
+如果当前不再需要 `latency / throughput` 测试，直接在 CLI 里输入：
+
+```bash
+benchstop
+```
+
+### 8. 测 CPU 与内存占用
 
 查看源节点 `sta1` 当前 overlay 相关进程的 CPU 和内存占用：
 
@@ -344,7 +370,7 @@ sta7 bash -lc "cd /home/woodzow/overlay_AODV/src && PYTHONPATH=. python3 resourc
 
 - `latency` 当前测的是 RTT，并给出 `RTT/2` 的单向估计值；严格单向时延需要时钟同步
 - `route_setup_sec` 只有在目标路由尚未建立时才代表真正的“首次收敛时间”
-- 如果需要在 benchmark 后继续排查路径变化，可附加 `--cli` 并结合 `SHOW_ROUTE`、`SHOW_ROUTE_DETAIL:10.0.0.12` 与 AODV 日志一起分析
+- 如果需要从 `sta3` 等非默认源节点发起 `latency / throughput` 测试，记得先执行对应的 `benchstart sta3`
 
 ## 十二节点复杂拓扑底层丢包率扫描测试
 
@@ -480,5 +506,4 @@ cat /home/woodzow/overlay_AODV/logs/mininet_wifi/sta1-video_forwarder.log
 - Mininet-WiFi 线性多跳拓扑描述：`configs/mininet_wifi_linear_10hop/topology.json`
 - Mininet-WiFi 十二节点复杂拓扑配置：`configs/mininet_wifi_complex_12sta/sta1.json` 到 `configs/mininet_wifi_complex_12sta/sta12.json`
 - 拓扑描述与坐标：`configs/mininet_wifi_complex_12sta/topology.json`
-
 

@@ -239,13 +239,26 @@ def station_name_of_ip(topology: dict, target_ip: str) -> str:
     raise KeyError(f'unknown destination ip in topology: {target_ip}')
 
 
+def station_names(topology: dict) -> list[str]:
+    return [item['name'] for item in topology['stations']]
+
+
+def bench_daemon_target_names(topology: dict, source_name: str | None = None) -> tuple[str, list[str]]:
+    all_names = station_names(topology)
+    default_source = topology.get('video_source', 'sta1')
+    source = source_name or default_source
+    if source not in all_names:
+        raise ValueError(f'unknown source station: {source}')
+    return source, [name for name in all_names if name != source]
+
+
 def validate_bench_args(args: argparse.Namespace, topology: dict) -> None:
     if not args.bench:
         return
-    station_names = {item['name'] for item in topology['stations']}
-    if args.bench_source not in station_names:
+    known_station_names = set(station_names(topology))
+    if args.bench_source not in known_station_names:
         raise ValueError(f'unknown --bench-source: {args.bench_source}')
-    if args.bench_dest not in station_names:
+    if args.bench_dest not in known_station_names:
         raise ValueError(f'unknown --bench-dest: {args.bench_dest}')
     if args.bench_source == args.bench_dest:
         raise ValueError('--bench-source and --bench-dest must be different stations')
@@ -505,6 +518,47 @@ def run_one_click_benchmark(repo_root: Path, stations, topology: dict, args: arg
     print_bench_result(result)
 
 
+class OverlayBenchCLI(CLI):
+    def __init__(self, mn, *, repo_root: Path, topology: dict, bench_daemon_startup_sec: float) -> None:
+        self.repo_root = repo_root
+        self.topology = topology
+        self.bench_daemon_startup_sec = float(bench_daemon_startup_sec)
+        super().__init__(mn)
+
+    def _resolve_bench_nodes(self, line: str) -> tuple[str, list[object]]:
+        source_name, target_names = bench_daemon_target_names(self.topology, line.strip() or None)
+        return source_name, [self.mn.nameToNode[name] for name in target_names]
+
+    def do_benchstart(self, line: str) -> None:
+        try:
+            source_name, target_nodes = self._resolve_bench_nodes(line)
+        except ValueError as exc:
+            info(f'*** {exc}\n')
+            return
+        info(f'*** Starting overlay_bench daemons (source skipped: {source_name})\n')
+        for node in target_nodes:
+            stop_bench_daemon(node)
+        for node in target_nodes:
+            start_bench_daemon(node, source_ip_of(self.topology, node.name), self.repo_root)
+        time.sleep(self.bench_daemon_startup_sec)
+        info('*** overlay_bench daemons are ready\n')
+
+    def help_benchstart(self) -> None:
+        info('Start overlay_bench daemons on all relay/destination nodes for manual CLI tests.\n')
+        info('usage: benchstart [source_station]\n')
+        info('example: benchstart\n')
+        info('example: benchstart sta3\n')
+
+    def do_benchstop(self, _line: str) -> None:
+        info('*** Stopping overlay_bench daemons\n')
+        for node_name in station_names(self.topology):
+            stop_bench_daemon(self.mn.nameToNode[node_name])
+
+    def help_benchstop(self) -> None:
+        info('Stop all overlay_bench daemons started for manual CLI tests.\n')
+        info('usage: benchstop\n')
+
+
 def main() -> int:
     topology = load_topology()
     args = parse_args(topology)
@@ -589,7 +643,13 @@ def main() -> int:
 
         if args.cli:
             info('*** Starting Mininet-WiFi CLI\n')
-            CLI(net)
+            info('*** Custom CLI commands: benchstart [source_station], benchstop\n')
+            OverlayBenchCLI(
+                net,
+                repo_root=repo_root,
+                topology=topology,
+                bench_daemon_startup_sec=args.bench_daemon_startup_sec,
+            )
         return 0
     finally:
         info('*** Stopping overlay_bench daemons\n')
