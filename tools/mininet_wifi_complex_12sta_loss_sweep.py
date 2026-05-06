@@ -30,7 +30,7 @@ def load_topology() -> dict:
 
 def parse_args(topology: dict) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="One-click loss sweep on the 12-station complex Mininet-WiFi topology. Applies tc netem loss from 1% to 10% and measures sta1->sta12 overlay throughput and loss."
+        description="One-click loss sweep on the 12-station complex Mininet-WiFi topology. Applies a tc netem loss range and measures sta1->sta12 overlay throughput and loss."
     )
     parser.add_argument(
         "--neighbor-wait-sec",
@@ -59,7 +59,7 @@ def parse_args(topology: dict) -> argparse.Namespace:
     parser.add_argument(
         "--min-loss",
         type=int,
-        default=1,
+        default=0,
         help="Minimum tc netem loss percentage to test.",
     )
     parser.add_argument(
@@ -270,22 +270,43 @@ def run_throughput_measurement(
     return extract_json_result(run_cmd(source_node, command))
 
 
+def format_table_value(value, precision: int = 3) -> str:
+    if value is None:
+        return "-"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        text = f"{value:.{precision}f}"
+        return text.rstrip("0").rstrip(".") if "." in text else text
+    return str(value)
+
+
+def format_results_table(results: list[dict]) -> str:
+    columns = ("tc_loss%", "hop", "loss_rate", "goodput_mbps")
+    rows = []
+    for item in results:
+        rows.append(
+            (
+                format_table_value(item.get("tc_loss_percent"), 0),
+                format_table_value(item.get("hop_count"), 0),
+                format_table_value(item.get("loss_rate"), 3),
+                format_table_value(item.get("goodput_mbps"), 3),
+            )
+        )
+
+    widths = [
+        max(len(columns[index]), *(len(row[index]) for row in rows)) if rows else len(columns[index])
+        for index in range(len(columns))
+    ]
+    lines = ["  ".join(columns[index].ljust(widths[index]) for index in range(len(columns)))]
+    for row in rows:
+        lines.append("  ".join(row[index].rjust(widths[index]) for index in range(len(row))))
+    return "\n".join(lines)
+
+
 def print_results(results: list[dict], source_name: str, dest_name: str) -> None:
     info(f"\n=== overlay throughput/loss sweep ({source_name} -> {dest_name}) ===\n")
-    info("tc_loss%  status        hop  route_setup_sec  overlay_loss_rate  pdr         goodput_mbps  offered_load_mbps\n")
-    info("-----------------------------------------------------------------------------------------------------------\n")
-    for item in results:
-        route_setup_text = str(item.get("route_setup_sec", "-"))
-        hop_text = str(item.get("hop_count", "-"))
-        loss_rate_text = str(item.get("loss_rate", "-"))
-        pdr_text = str(item.get("pdr", "-"))
-        goodput_text = str(item.get("goodput_mbps", "-"))
-        offered_text = str(item.get("offered_load_mbps", "-"))
-        info(
-            f"{item['tc_loss_percent']:<8} {item['status']:<13} {hop_text:<4} {route_setup_text:<16} "
-            f"{loss_rate_text:<18} {pdr_text:<11} {goodput_text:<13} {offered_text}\n"
-        )
-    info("\njson=" + json.dumps(results, ensure_ascii=True, separators=(",", ":")) + "\n")
+    info(format_results_table(results) + "\n")
 
 
 def resolve_output_path(repo_root: Path, output_json: str) -> Path:
