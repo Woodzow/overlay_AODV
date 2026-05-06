@@ -59,28 +59,21 @@ class Complex12StaLossSweepTableTest(unittest.TestCase):
         cls.tool_module = load_sweep_module()
 
     def test_results_table_outputs_compact_loss_and_goodput_columns(self) -> None:
-        table = self.tool_module.format_results_table(
-            [
-                {
-                    "tc_loss_percent": 0,
-                    "hop_count": 3,
-                    "loss_rate": 0,
-                    "goodput_mbps": 4.428,
-                },
-                {
-                    "tc_loss_percent": 5,
-                    "hop_count": 3,
-                    "loss_rate": 0.141,
-                    "goodput_mbps": 3.436,
-                    "offered_load_mbps": 4.0,
-                },
-            ]
-        )
+        table = self.tool_module.format_results_table(self.tool_module.SCREENSHOT_TABLE_RESULTS)
 
         lines = table.splitlines()
-        self.assertEqual("tc_loss%  hop  loss_rate  goodput_mbps", lines[0])
-        self.assertEqual("       0    3          0         4.428", lines[1])
-        self.assertEqual("       5    3      0.141         3.436", lines[2])
+        self.assertEqual(
+            [
+                "tc_loss%  hop  loss_rate  goodput_mbps",
+                "       0    3          0         4.428",
+                "       1    3      0.026         4.276",
+                "       2    3      0.056         4.042",
+                "       3    3      0.077         3.985",
+                "       4    3      0.115         3.594",
+                "       5    3      0.141         3.436",
+            ],
+            lines,
+        )
 
 
 if __name__ == "__main__":

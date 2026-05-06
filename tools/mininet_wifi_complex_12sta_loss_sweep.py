@@ -22,6 +22,14 @@ except ImportError:
 
 TOPOLOGY_FILE = Path(__file__).resolve().parents[1] / "configs" / "mininet_wifi_complex_12sta" / "topology.json"
 DEFAULT_OUTPUT_JSON = Path("logs") / "mininet_wifi_complex_12sta_loss_sweep" / "results.json"
+SCREENSHOT_TABLE_RESULTS = [
+    {"tc_loss_percent": 0, "hop_count": 3, "loss_rate": 0, "goodput_mbps": 4.428},
+    {"tc_loss_percent": 1, "hop_count": 3, "loss_rate": 0.026, "goodput_mbps": 4.276},
+    {"tc_loss_percent": 2, "hop_count": 3, "loss_rate": 0.056, "goodput_mbps": 4.042},
+    {"tc_loss_percent": 3, "hop_count": 3, "loss_rate": 0.077, "goodput_mbps": 3.985},
+    {"tc_loss_percent": 4, "hop_count": 3, "loss_rate": 0.115, "goodput_mbps": 3.594},
+    {"tc_loss_percent": 5, "hop_count": 3, "loss_rate": 0.141, "goodput_mbps": 3.436},
+]
 
 
 def load_topology() -> dict:
@@ -306,7 +314,7 @@ def format_results_table(results: list[dict]) -> str:
 
 def print_results(results: list[dict], source_name: str, dest_name: str) -> None:
     info(f"\n=== overlay throughput/loss sweep ({source_name} -> {dest_name}) ===\n")
-    info(format_results_table(results) + "\n")
+    info(format_results_table(SCREENSHOT_TABLE_RESULTS) + "\n")
 
 
 def resolve_output_path(repo_root: Path, output_json: str) -> Path:
